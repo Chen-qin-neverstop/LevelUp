@@ -230,6 +230,38 @@
         .hidden {
             display: none;
         }
+        
+        .penalty-warning {
+            background: linear-gradient(45deg, #dc3545, #fd7e14);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .level-down-animation {
+            background: linear-gradient(45deg, #dc3545, #fd7e14);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            animation: levelDownGlow 2s ease-in-out;
+            border: 3px solid #dc3545;
+        }
+        
+        @keyframes levelDownGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(220, 53, 69, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(220, 53, 69, 0.8); }
+        }
+        
+        .level-down-text {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -266,6 +298,12 @@
                 <input type="number" id="currentLevelExp" min="0" value="0">
                 <span class="exp-info" id="levelExpInfo">当前等级内的经验值 (最大: 10)</span>
             </div>
+            
+            <div class="input-group">
+                <label for="penalty">惩罚扣除经验：</label>
+                <input type="number" id="penalty" min="0" value="0">
+                <span class="exp-info">扣除的经验值（可能导致降级）</span>
+            </div>
         </div>
         
         <button class="calculate-btn" onclick="calculateLevelUp()">🚀 计算升级进度</button>
@@ -287,6 +325,11 @@
                 <span class="stat-value" id="gainedExp">0</span>
             </div>
             
+            <div class="stat-item" id="penaltyExpDisplay" style="display: none;">
+                <span class="stat-label">惩罚扣除：</span>
+                <span class="stat-value" style="color: #dc3545;" id="penaltyExpValue">0</span>
+            </div>
+            
             <div class="stat-item">
                 <span class="stat-label">总经验：</span>
                 <span class="stat-value" id="totalExp">0</span>
@@ -294,7 +337,7 @@
             
             <div class="stat-item">
                 <span class="stat-label">当前等级：</span>
-                <span class="current-level" id="currentLevel">等级 1</span>
+                <span class="current-level" id="resultLevel">等级 1</span>
             </div>
             
             <div class="stat-item">
@@ -397,6 +440,7 @@
                 const difficultTasks = parseInt(document.getElementById('difficult').value) || 0;
                 const currentLevel = parseInt(document.getElementById('currentLevel').value) || 1;
                 const currentLevelExp = parseInt(document.getElementById('currentLevelExp').value) || 0;
+                const penaltyExp = parseInt(document.getElementById('penalty').value) || 0;
                 
                 // 验证当前等级经验不能超过该等级所需经验
                 const maxExpForCurrentLevel = getExpForLevel(currentLevel);
@@ -417,20 +461,31 @@
             const difficultExp = difficultTasks * 5;
             
             const gainedExp = commonExp + intermediateExp + difficultExp;
-            const newTotalExp = currentTotalExp + gainedExp;
+            // 计算最终经验：当前经验 + 获得经验 - 惩罚经验
+            const finalTotalExp = Math.max(0, currentTotalExp + gainedExp - penaltyExp);
             const totalTasks = commonTasks + intermediateTasks + difficultTasks;
+            const netExpChange = gainedExp - penaltyExp;
             
             // 计算等级信息
             const oldLevelInfo = calculateLevel(currentTotalExp);
-            const newLevelInfo = calculateLevel(newTotalExp);
+            const newLevelInfo = calculateLevel(finalTotalExp);
             
             // 更新结果显示
             document.getElementById('totalTasks').textContent = totalTasks;
             document.getElementById('gainedExp').textContent = gainedExp;
-            document.getElementById('totalExp').textContent = newTotalExp;
-            document.getElementById('currentLevel').textContent = `等级 ${newLevelInfo.level}`;
+            document.getElementById('totalExp').textContent = finalTotalExp;
+            document.getElementById('resultLevel').textContent = `等级 ${newLevelInfo.level}`;
             document.getElementById('nextLevelExp').textContent = 
                 `${newLevelInfo.expNeededForNext - newLevelInfo.expInCurrentLevel} 经验`;
+            
+            // 显示或隐藏惩罚信息
+            const penaltyDisplay = document.getElementById('penaltyExpDisplay');
+            if (penaltyExp > 0) {
+                penaltyDisplay.style.display = 'flex';
+                document.getElementById('penaltyExpValue').textContent = penaltyExp;
+            } else {
+                penaltyDisplay.style.display = 'none';
+            }
             
             // 计算进度条
             const progressPercent = (newLevelInfo.expInCurrentLevel / newLevelInfo.expNeededForNext) * 100;
@@ -446,14 +501,70 @@
             document.getElementById('difficultExpDetail').innerHTML = 
                 `<span>困难任务经验：</span><span>${difficultTasks} × 5 = ${difficultExp}</span>`;
             
-            // 检查是否升级
+            // 添加惩罚和净经验显示
+            let penaltyDetailHtml = '';
+            if (penaltyExp > 0) {
+                penaltyDetailHtml = `
+                    <div class="exp-item" style="color: #dc3545;">
+                        <span>惩罚扣除经验：</span><span>-${penaltyExp}</span>
+                    </div>
+                `;
+            }
+            
+            const netExpDetailHtml = `
+                <div class="exp-item" style="border-top: 2px solid #dee2e6; font-weight: bold; ${netExpChange >= 0 ? 'color: #28a745;' : 'color: #dc3545;'}">
+                    <span>净经验变化：</span><span>${netExpChange >= 0 ? '+' : ''}${netExpChange}</span>
+                </div>
+            `;
+            
+            // 插入惩罚和净经验信息
+            const expBreakdown = document.querySelector('.exp-breakdown');
+            if (document.getElementById('penaltyDetail')) {
+                document.getElementById('penaltyDetail').remove();
+            }
+            if (document.getElementById('netExpDetail')) {
+                document.getElementById('netExpDetail').remove();
+            }
+            
+            if (penaltyExp > 0) {
+                expBreakdown.insertAdjacentHTML('beforeend', `<div id="penaltyDetail">${penaltyDetailHtml}</div>`);
+            }
+            expBreakdown.insertAdjacentHTML('beforeend', `<div id="netExpDetail">${netExpDetailHtml}</div>`);
+            
+            // 检查是否升级或降级
             const levelUpNotification = document.getElementById('levelUpNotification');
             if (newLevelInfo.level > oldLevelInfo.level) {
+                // 升级情况
                 levelUpNotification.classList.remove('hidden');
+                levelUpNotification.className = 'level-up-animation';
                 levelUpNotification.innerHTML = 
                     `<p class="level-up-text">🎉 恭喜！从等级 ${oldLevelInfo.level} 升级到等级 ${newLevelInfo.level}！</p>`;
+            } else if (newLevelInfo.level < oldLevelInfo.level) {
+                // 降级情况
+                levelUpNotification.classList.remove('hidden');
+                levelUpNotification.className = 'level-down-animation';
+                levelUpNotification.innerHTML = 
+                    `<p class="level-down-text">⚠️ 由于惩罚，从等级 ${oldLevelInfo.level} 降级到等级 ${newLevelInfo.level}！</p>`;
             } else {
+                // 等级没变
                 levelUpNotification.classList.add('hidden');
+            }
+            
+            // 如果有惩罚且经验为0，显示特殊警告
+            if (penaltyExp > 0 && finalTotalExp === 0) {
+                const warningHtml = `
+                    <div class="penalty-warning">
+                        ⚠️ 警告：惩罚过重，经验值已降至最低点！
+                    </div>
+                `;
+                if (!document.getElementById('penaltyWarning')) {
+                    levelUpNotification.insertAdjacentHTML('afterend', `<div id="penaltyWarning">${warningHtml}</div>`);
+                }
+            } else {
+                const existingWarning = document.getElementById('penaltyWarning');
+                if (existingWarning) {
+                    existingWarning.remove();
+                }
             }
             
             // 显示结果区域
