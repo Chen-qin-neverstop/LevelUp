@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务升级计算器</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .calculator-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 700px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            /* 兼容性备选方案 */
+            -moz-background-clip: text;
+            -ms-background-clip: text;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 120px;
+            font-size: 16px;
+        }
+        
+        input[type="number"] {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 16px;
+            width: 100px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .exp-info {
+            color: #6c757d;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: block;
+            margin: 30px auto;
+            min-width: 200px;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .results {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .results h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .level-progress {
+            background: #e9ecef;
+            border-radius: 20px;
+            height: 25px;
+            margin: 15px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .level-progress-bar {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 20px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .level-progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .level-up-animation {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            animation: levelUpGlow 2s ease-in-out;
+            border: 3px solid #ffd700;
+        }
+        
+        @keyframes levelUpGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.8); }
+        }
+        
+        .level-up-text {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #b8860b;
+            margin: 0;
+        }
+        
+        .current-level {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+        
+        .exp-breakdown {
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .exp-breakdown h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .exp-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>📊 任务完成与升级计算器</h1>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="common">普通任务：</label>
+                <input type="number" id="common" min="0" value="0">
+                <span class="exp-info">每个 +2 经验</span>
+            </div>
+            
+            <div class="input-group">
+                <label for="intermediate">中等任务：</label>
+                <input type="number" id="intermediate" min="0" value="0">
+                <span class="exp-info">每个 +3 经验</span>
+            </div>
+            
+            <div class="input-group">
+                <label for="difficult">困难任务：</label>
+                <input type="number" id="difficult" min="0" value="0">
+                <span class="exp-info">每个 +5 经验</span>
+            </div>
+            
+            <div class="input-group">
+                <label for="currentLevel">当前等级：</label>
+                <input type="number" id="currentLevel" min="1" value="1" onchange="updateLevelInfo()">
+                <span class="exp-info">你现在的等级</span>
+            </div>
+            
+            <div class="input-group">
+                <label for="currentLevelExp">当前等级经验：</label>
+                <input type="number" id="currentLevelExp" min="0" value="0">
+                <span class="exp-info" id="levelExpInfo">当前等级内的经验值 (最大: 10)</span>
+            </div>
+        </div>
+        
+        <button class="calculate-btn" onclick="calculateLevelUp()">🚀 计算升级进度</button>
+        
+        <div id="results" class="results hidden">
+            <h3>📈 计算结果</h3>
+            
+            <div id="levelUpNotification" class="level-up-animation hidden">
+                <p class="level-up-text">🎉 恭喜升级！</p>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-label">任务总数：</span>
+                <span class="stat-value" id="totalTasks">0</span>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-label">获得经验：</span>
+                <span class="stat-value" id="gainedExp">0</span>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-label">总经验：</span>
+                <span class="stat-value" id="totalExp">0</span>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-label">当前等级：</span>
+                <span class="current-level" id="currentLevel">等级 1</span>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-label">距离下一级：</span>
+                <span class="stat-value" id="nextLevelExp">0</span>
+            </div>
+            
+            <div class="level-progress">
+                <div class="level-progress-bar" id="progressBar">
+                    <div class="level-progress-text" id="progressText">0%</div>
+                </div>
+            </div>
+            
+            <div class="exp-breakdown">
+                <h4>🎯 经验详细分解</h4>
+                <div class="exp-item" id="commonExpDetail">
+                    <span>普通任务经验：</span>
+                    <span>0</span>
+                </div>
+                <div class="exp-item" id="intermediateExpDetail">
+                    <span>中等任务经验：</span>
+                    <span>0</span>
+                </div>
+                <div class="exp-item" id="difficultExpDetail">
+                    <span>困难任务经验：</span>
+                    <span>0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 检查浏览器兼容性
+        if (!document.getElementById) {
+            alert('您的浏览器版本过低，请升级浏览器后再试');
+        }
+        
+        // 等级系统设计：1级需要10exp，每升一级多需要1exp
+        function getExpForLevel(level) {
+            // 等级1需要：10经验
+            // 等级2需要：11经验（10+1）
+            // 等级3需要：12经验（11+1）
+            // 等级n需要：10+(n-1)经验
+            return 10 + (level - 1);
+        }
+        
+        // 根据当前等级和等级内经验计算总经验
+        function calculateTotalExp(currentLevel, currentLevelExp) {
+            let totalExp = 0;
+            // 计算之前所有等级消耗的经验
+            for (let i = 1; i < currentLevel; i++) {
+                totalExp += getExpForLevel(i);
+            }
+            // 加上当前等级内的经验
+            totalExp += currentLevelExp;
+            return totalExp;
+        }
+        
+        // 更新等级信息显示
+        function updateLevelInfo() {
+            const currentLevel = parseInt(document.getElementById('currentLevel').value) || 1;
+            const maxExp = getExpForLevel(currentLevel);
+            document.getElementById('levelExpInfo').textContent = 
+                `当前等级内的经验值 (最大: ${maxExp - 1})`;
+            
+            // 更新当前等级经验的最大值
+            const currentLevelExpInput = document.getElementById('currentLevelExp');
+            currentLevelExpInput.max = maxExp - 1;
+            if (parseInt(currentLevelExpInput.value) >= maxExp) {
+                currentLevelExpInput.value = maxExp - 1;
+            }
+        }
+        
+        // 计算总经验对应的等级
+        function calculateLevel(totalExp) {
+            let level = 1;
+            let expUsed = 0;
+            
+            while (true) {
+                let expNeeded = getExpForLevel(level);
+                if (expUsed + expNeeded > totalExp) {
+                    break;
+                }
+                expUsed += expNeeded;
+                level++;
+            }
+            
+            return {
+                level: level,
+                expInCurrentLevel: totalExp - expUsed,
+                expNeededForNext: getExpForLevel(level)
+            };
+        }
+        
+        function calculateLevelUp() {
+            try {
+                // 获取输入值
+                const commonTasks = parseInt(document.getElementById('common').value) || 0;
+                const intermediateTasks = parseInt(document.getElementById('intermediate').value) || 0;
+                const difficultTasks = parseInt(document.getElementById('difficult').value) || 0;
+                const currentLevel = parseInt(document.getElementById('currentLevel').value) || 1;
+                const currentLevelExp = parseInt(document.getElementById('currentLevelExp').value) || 0;
+                
+                // 验证当前等级经验不能超过该等级所需经验
+                const maxExpForCurrentLevel = getExpForLevel(currentLevel);
+                if (currentLevelExp >= maxExpForCurrentLevel) {
+                    alert(`当前等级${currentLevel}最多需要${maxExpForCurrentLevel}经验，您输入的经验值过大！`);
+                    return;
+                }
+                
+                // 计算当前总经验
+                const currentTotalExp = calculateTotalExp(currentLevel, currentLevelExp);
+            
+            // 计算经验值（基于更新后的系统设计）
+            // 普通任务：2经验 - 适合日常基础任务
+            // 中等任务：3经验 - 需要一定技能或时间投入
+            // 困难任务：5经验 - 具有挑战性的复杂任务
+            const commonExp = commonTasks * 2;
+            const intermediateExp = intermediateTasks * 3;
+            const difficultExp = difficultTasks * 5;
+            
+            const gainedExp = commonExp + intermediateExp + difficultExp;
+            const newTotalExp = currentTotalExp + gainedExp;
+            const totalTasks = commonTasks + intermediateTasks + difficultTasks;
+            
+            // 计算等级信息
+            const oldLevelInfo = calculateLevel(currentTotalExp);
+            const newLevelInfo = calculateLevel(newTotalExp);
+            
+            // 更新结果显示
+            document.getElementById('totalTasks').textContent = totalTasks;
+            document.getElementById('gainedExp').textContent = gainedExp;
+            document.getElementById('totalExp').textContent = newTotalExp;
+            document.getElementById('currentLevel').textContent = `等级 ${newLevelInfo.level}`;
+            document.getElementById('nextLevelExp').textContent = 
+                `${newLevelInfo.expNeededForNext - newLevelInfo.expInCurrentLevel} 经验`;
+            
+            // 计算进度条
+            const progressPercent = (newLevelInfo.expInCurrentLevel / newLevelInfo.expNeededForNext) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+            document.getElementById('progressText').textContent = 
+                `${newLevelInfo.expInCurrentLevel}/${newLevelInfo.expNeededForNext} (${Math.round(progressPercent)}%)`;
+            
+            // 更新经验详细分解
+            document.getElementById('commonExpDetail').innerHTML = 
+                `<span>普通任务经验：</span><span>${commonTasks} × 2 = ${commonExp}</span>`;
+            document.getElementById('intermediateExpDetail').innerHTML = 
+                `<span>中等任务经验：</span><span>${intermediateTasks} × 3 = ${intermediateExp}</span>`;
+            document.getElementById('difficultExpDetail').innerHTML = 
+                `<span>困难任务经验：</span><span>${difficultTasks} × 5 = ${difficultExp}</span>`;
+            
+            // 检查是否升级
+            const levelUpNotification = document.getElementById('levelUpNotification');
+            if (newLevelInfo.level > oldLevelInfo.level) {
+                levelUpNotification.classList.remove('hidden');
+                levelUpNotification.innerHTML = 
+                    `<p class="level-up-text">🎉 恭喜！从等级 ${oldLevelInfo.level} 升级到等级 ${newLevelInfo.level}！</p>`;
+            } else {
+                levelUpNotification.classList.add('hidden');
+            }
+            
+            // 显示结果区域
+            document.getElementById('results').classList.remove('hidden');
+            
+            // 滚动到结果区域
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        } catch (error) {
+            console.error('计算过程中出现错误:', error);
+            alert('计算过程中出现错误，请检查输入值');
+        }
+    }
+        
+        // 添加回车键支持
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculateLevelUp();
+            }
+        });
+        
+        // 添加实时计算功能
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                if (document.getElementById('results').classList.contains('hidden')) {
+                    return;
+                }
+                calculateLevelUp();
+            });
+        });
+        
+        // 页面加载时初始化等级信息
+        window.onload = function() {
+            updateLevelInfo();
+        };
+    </script>
+</body>
+</html>

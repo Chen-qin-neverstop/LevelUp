@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试页面</title>
+</head>
+<body>
+    <h1>测试页面</h1>
+    <p>如果您能看到这个页面，说明HTML文件可以正常识别。</p>
+    <button onclick="testFunction()">点击测试JavaScript</button>
+    
+    <script>
+        function testFunction() {
+            alert('JavaScript正常工作！');
+        }
+        
+        // 检查页面加载
+        window.onload = function() {
+            console.log('页面加载完成');
+        };
+    </script>
+</body>
+</html>
