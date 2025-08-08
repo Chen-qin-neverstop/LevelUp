@@ -7,22 +7,632 @@
     <style>
         body {
             font-family: 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+            background-attachment: fixed;
             margin: 0;
             padding: 20px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
         }
         
-        .calculator-container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            max-width: 700px;
+        .guild-container {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            border-radius: 25px;
+            padding: 0;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            max-width: 900px;
             width: 100%;
+            overflow: hidden;
+            border: 3px solid rgba(102,126,234,0.3);
+        }
+
+        .guild-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0;
+        }
+
+        .guild-banner {
+            display: flex;
+            align-items: center;
+            padding: 20px 30px;
+            position: relative;
+        }
+
+        .guild-icon {
+            font-size: 3em;
+            margin-right: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .guild-title h1 {
+            margin: 0;
+            font-size: 2.2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+        }
+
+        .guild-title p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .guild-status {
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .guild-rank {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+
+        .adventurer-card {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 3px solid #dee2e6;
+            flex-wrap: wrap;
+        }
+
+        .adventurer-avatar {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .adventurer-avatar img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #667eea;
+            object-fit: cover;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .adventurer-avatar img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+        }
+
+        .class-badge {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .adventurer-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .adventurer-info h2 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .class-display {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .level-display {
+            margin-bottom: 15px;
+        }
+
+        .level-text {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1.1em;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .exp-bar {
+            background: #e9ecef;
+            border-radius: 15px;
+            height: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #dee2e6;
+        }
+
+        .exp-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 13px;
+            transition: width 0.5s ease;
+        }
+
+        .exp-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #333;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .adventurer-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 150px;
+        }
+
+        .role-selector {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            background: white;
+        }
+
+        .action-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn.delete {
+            background: linear-gradient(45deg, #dc3545, #fd7e14);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .quest-board {
+            padding: 30px;
+            border-bottom: 3px solid #dee2e6;
+        }
+
+        .board-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .board-header h3 {
+            color: #333;
+            font-size: 1.8em;
+            margin: 0 0 5px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .board-subtitle {
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .quest-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .quest-category {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .quest-category:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .quest-type-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .quest-icon {
+            font-size: 1.5em;
+        }
+
+        .quest-type-header h4 {
+            flex: 1;
+            margin: 0;
+            font-size: 1.3em;
+            color: #333;
+        }
+
+        .difficulty-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .difficulty-badge.easy {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .difficulty-badge.medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .difficulty-badge.hard {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .quest-input {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .quest-counter {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 16px;
+            width: 80px;
+            text-align: center;
+            font-weight: 600;
+            transition: border-color 0.3s ease;
+        }
+
+        .quest-counter:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .quest-info {
+            flex: 1;
+        }
+
+        .reward {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .description {
+            color: #6c757d;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .adventurer-status {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 3px solid #dee2e6;
+        }
+
+        .status-section h4 {
+            color: #333;
+            margin: 0 0 20px 0;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+
+        .status-item.penalty {
+            border-color: #fd7e14;
+            background: #fff8f0;
+        }
+
+        .status-item label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 80px;
+            font-size: 14px;
+        }
+
+        .status-item input {
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 14px;
+            width: 80px;
+            text-align: center;
+        }
+
+        .level-exp-info, .penalty-info {
+            color: #6c757d;
+            font-size: 12px;
+            margin-left: 10px;
+            flex: 1;
+        }
+
+        .submit-section {
+            padding: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .submit-quest-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 20px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            min-width: 200px;
+        }
+
+        .submit-quest-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+        }
+
+        .btn-icon {
+            font-size: 1.5em;
+        }
+
+        .btn-text {
+            font-size: 1.1em;
+        }
+
+        .btn-subtitle {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .quest-report {
+            padding: 30px;
+            background: white;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .report-header h3 {
+            color: #333;
+            font-size: 1.8em;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .level-notification {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        .level-notification.level-up {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border: 3px solid #ffd700;
+            color: #b8860b;
+            animation: levelUpGlow 2s ease-in-out;
+        }
+
+        .level-notification.level-down {
+            background: linear-gradient(45deg, #dc3545, #fd7e14);
+            border: 3px solid #dc3545;
+            color: white;
+            animation: levelDownGlow 2s ease-in-out;
+        }
+
+        .report-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .stat-card.penalty-card {
+            background: #fff8f0;
+            border-color: #fd7e14;
+        }
+
+        .stat-icon {
+            font-size: 2em;
+            opacity: 0.8;
+        }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-label {
+            display: block;
+            color: #6c757d;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            display: block;
+            color: #333;
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .stat-value.penalty {
+            color: #dc3545;
+        }
+
+        .level-progress-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .current-level-display {
+            margin-bottom: 15px;
+        }
+
+        .level-badge {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1.3em;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .progress-info {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .exp-breakdown {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .exp-breakdown h4 {
+            color: #333;
+            margin: 0 0 20px 0;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .breakdown-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .breakdown-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .breakdown-value {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .guild-message {
+            margin: 20px 30px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        .guild-message:not(.error) {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .guild-message.error {
+            background: linear-gradient(45deg, #dc3545, #fd7e14);
+            color: white;
         }
         
         h1 {
@@ -602,140 +1212,266 @@
     </style>
 </head>
 <body>
-    <div class="calculator-container">
-        <!-- 角色头像区 -->
-        <div class="role-avatar-section">
-            <div class="avatar-container">
-                <img id="roleAvatar" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiM2NjdlZWEiLz4KPHN2ZyB4PSIyMCIgeT0iMTAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI2MCI+Cjx0ZXh0IHg9IjIwIiB5PSIzNSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+QpTwvdGV4dD4KPC9zdmc+Cjwvc3ZnPgo=" alt="角色头像" onclick="changeAvatar()">
+    <!-- RPG风格角色选择界面 -->
+    <div id="characterSelectModal" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:linear-gradient(135deg, rgba(30,30,60,0.95), rgba(76,75,162,0.85));z-index:9999;display:flex;align-items:center;justify-content:center;">
+        <div style="background:linear-gradient(135deg, #fff, #f8f9fa);border-radius:25px;padding:40px;box-shadow:0 20px 50px rgba(0,0,0,0.4);min-width:450px;text-align:center;max-width:90vw;border:3px solid #667eea;">
+            <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:30px;">
+                <div style="font-size:4em;margin-bottom:10px;">🏛️</div>
+                <h1 style="color:#764ba2;font-size:2.5em;margin:0;letter-spacing:3px;text-shadow:2px 2px 4px rgba(0,0,0,0.1);">冒险家工会</h1>
+                <p style="color:#666;font-style:italic;margin:5px 0 0 0;">欢迎，勇敢的冒险者</p>
+            </div>
+            
+            <h3 style="color:#333;margin-bottom:25px;font-size:1.3em;">选择你的角色</h3>
+            <div id="characterList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:20px;margin-bottom:25px;"></div>
+            
+            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                <button id="addCharacterBtn" style="background:linear-gradient(45deg,#667eea,#764ba2);color:#fff;border:none;border-radius:12px;padding:12px 20px;font-size:1em;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.2);transition:all 0.3s ease;">
+                    <span style="font-size:1.2em;">⚔️</span> 创建新冒险者
+                </button>
+            </div>
+            
+            <div id="newCharacterForm" style="display:none;margin-top:25px;padding:20px;background:rgba(102,126,234,0.1);border-radius:15px;">
+                <div style="display:flex;flex-direction:column;gap:15px;align-items:center;">
+                    <div style="display:flex;align-items:center;gap:15px;width:100%;">
+                        <label style="font-weight:bold;color:#333;min-width:60px;">姓名:</label>
+                        <input type="text" id="newCharacterName" placeholder="输入角色名称" style="flex:1;padding:10px 15px;border-radius:8px;border:2px solid #ddd;font-size:1em;">
+                    </div>
+                    <div style="display:flex;align-items:center;gap:15px;width:100%;">
+                        <label style="font-weight:bold;color:#333;min-width:60px;">职业:</label>
+                        <select id="newCharacterClass" style="flex:1;padding:10px 15px;border-radius:8px;border:2px solid #ddd;font-size:1em;">
+                            <option value="warrior">🛡️ 战士</option>
+                            <option value="mage">🔮 法师</option>
+                            <option value="rogue">🗡️ 盗贼</option>
+                            <option value="healer">✨ 治疗师</option>
+                            <option value="archer">🏹 弓箭手</option>
+                            <option value="scholar">📚 学者</option>
+                        </select>
+                    </div>
+                    <button id="confirmNewCharacterBtn" style="background:#28a745;color:#fff;border:none;border-radius:8px;padding:10px 25px;font-size:1em;cursor:pointer;box-shadow:0 3px 6px rgba(0,0,0,0.2);">
+                        <span style="font-size:1.1em;">✨</span> 确认创建
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 冒险家工会主界面 -->
+    <div id="guildMain" class="guild-container" style="display:none;">
+        <!-- 工会顶部横幅 -->
+        <div class="guild-header">
+            <div class="guild-banner">
+                <span class="guild-icon">🏛️</span>
+                <div class="guild-title">
+                    <h1>冒险家工会</h1>
+                    <p>任务委托管理中心</p>
+                </div>
+                <div class="guild-status">
+                    <span class="guild-rank">⭐ A级工会</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 当前冒险者信息 -->
+        <div class="adventurer-card">
+            <div class="adventurer-avatar">
+                <img id="roleAvatar" src="" alt="角色头像" onclick="changeAvatar()">
                 <div class="avatar-edit-overlay" onclick="changeAvatar()">
                     <span>📷</span>
                 </div>
+                <div class="class-badge" id="classBadge">🛡️</div>
             </div>
-            <div class="role-info">
-                <h2 id="roleDisplayName">默认角色</h2>
+            <div class="adventurer-info">
+                <h2 id="roleDisplayName">新手冒险者</h2>
+                <div class="class-display" id="classDisplay">战士</div>
+                <div class="level-display">
+                    <span class="level-text" id="levelText">等级 1</span>
+                    <div class="exp-bar">
+                        <div class="exp-fill" id="expFill" style="width:0%"></div>
+                        <span class="exp-text" id="expText">0/10</span>
+                    </div>
+                </div>
                 <div class="signature-container">
-                    <p id="roleSignature" onclick="editSignature()">点击设置个性签名...</p>
+                    <p id="roleSignature" onclick="editSignature()">点击设置冒险者宣言...</p>
                     <span class="edit-signature-icon" onclick="editSignature()">✏️</span>
                 </div>
             </div>
-        </div>
-        
-        <h1>📊 任务完成与升级计算器</h1>
-        
-        <!-- 角色管理区 -->
-        <div class="role-management">
-            <div class="role-selector">
-                <label for="roleSelect">当前角色：</label>
-                <select id="roleSelect" onchange="switchRole()">
-                    <option value="默认角色">默认角色</option>
+            <div class="adventurer-actions">
+                <select id="roleSelect" onchange="switchRole()" class="role-selector">
+                    <option value="默认角色">选择冒险者</option>
                 </select>
-            </div>
-            <button class="add-role-btn" onclick="showAddRoleDialog()">+ 添加角色</button>
-            <button class="delete-role-btn" id="deleteRoleBtn" onclick="deleteCurrentRole()" style="display: none;">🗑️ 删除角色</button>
-        </div>
-        
-        <!-- 提示消息区 -->
-        <div id="roleMessage" class="role-message hidden"></div>
-        
-        <div class="input-section">
-            <div class="input-group">
-                <label for="common">普通任务：</label>
-                <input type="number" id="common" min="0" value="0">
-                <span class="exp-info">每个 +2 经验</span>
-            </div>
-            
-            <div class="input-group">
-                <label for="intermediate">中等任务：</label>
-                <input type="number" id="intermediate" min="0" value="0">
-                <span class="exp-info">每个 +3 经验</span>
-            </div>
-            
-            <div class="input-group">
-                <label for="difficult">困难任务：</label>
-                <input type="number" id="difficult" min="0" value="0">
-                <span class="exp-info">每个 +5 经验</span>
-            </div>
-            
-            <div class="input-group">
-                <label for="currentLevel">当前等级：</label>
-                <input type="number" id="currentLevel" min="1" value="1" onchange="updateLevelInfo()">
-                <span class="exp-info">你现在的等级</span>
-            </div>
-            
-            <div class="input-group">
-                <label for="currentLevelExp">当前等级经验：</label>
-                <input type="number" id="currentLevelExp" min="0" value="0">
-                <span class="exp-info" id="levelExpInfo">当前等级内的经验值 (最大: 10)</span>
-            </div>
-            
-            <div class="input-group">
-                <label for="penalty">惩罚扣除经验：</label>
-                <input type="number" id="penalty" min="0" value="0">
-                <span class="exp-info">扣除的经验值（可能导致降级）</span>
+                <button class="action-btn create" onclick="showAddRoleDialog()">
+                    <span>⚔️</span> 新冒险者
+                </button>
+                <button class="action-btn delete" id="deleteRoleBtn" onclick="deleteCurrentRole()" style="display: none;">
+                    <span>🗑️</span> 退出工会
+                </button>
             </div>
         </div>
-        
-        <button class="calculate-btn" onclick="calculateLevelUp()">🚀 计算升级进度</button>
-        
-        <div id="results" class="results hidden">
-            <h3>📈 计算结果</h3>
-            
-            <div id="levelUpNotification" class="level-up-animation hidden">
-                <p class="level-up-text">🎉 恭喜升级！</p>
+
+        <!-- 任务委托板 -->
+        <div class="quest-board">
+            <div class="board-header">
+                <h3><span>📋</span> 任务委托板</h3>
+                <div class="board-subtitle">接取任务，获得经验与奖励</div>
             </div>
             
-            <div class="stat-item">
-                <span class="stat-label">任务总数：</span>
-                <span class="stat-value" id="totalTasks">0</span>
-            </div>
-            
-            <div class="stat-item">
-                <span class="stat-label">获得经验：</span>
-                <span class="stat-value" id="gainedExp">0</span>
-            </div>
-            
-            <div class="stat-item" id="penaltyExpDisplay" style="display: none;">
-                <span class="stat-label">惩罚扣除：</span>
-                <span class="stat-value" style="color: #dc3545;" id="penaltyExpValue">0</span>
-            </div>
-            
-            <div class="stat-item">
-                <span class="stat-label">总经验：</span>
-                <span class="stat-value" id="totalExp">0</span>
-            </div>
-            
-            <div class="stat-item">
-                <span class="stat-label">当前等级：</span>
-                <span class="current-level" id="resultLevel">等级 1</span>
-            </div>
-            
-            <div class="stat-item">
-                <span class="stat-label">距离下一级：</span>
-                <span class="stat-value" id="nextLevelExp">0</span>
-            </div>
-            
-            <div class="level-progress">
-                <div class="level-progress-bar" id="progressBar">
-                    <div class="level-progress-text" id="progressText">0%</div>
+            <div class="quest-section">
+                <div class="quest-category">
+                    <div class="quest-type-header daily">
+                        <span class="quest-icon">🎯</span>
+                        <h4>日常任务</h4>
+                        <span class="difficulty-badge easy">简单</span>
+                    </div>
+                    <div class="quest-input">
+                        <input type="number" id="common" min="0" value="0" class="quest-counter">
+                        <div class="quest-info">
+                            <span class="reward">+2 经验/个</span>
+                            <span class="description">基础日常任务，适合新手冒险者</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quest-category">
+                    <div class="quest-type-header adventure">
+                        <span class="quest-icon">⚔️</span>
+                        <h4>冒险任务</h4>
+                        <span class="difficulty-badge medium">中等</span>
+                    </div>
+                    <div class="quest-input">
+                        <input type="number" id="intermediate" min="0" value="0" class="quest-counter">
+                        <div class="quest-info">
+                            <span class="reward">+3 经验/个</span>
+                            <span class="description">需要一定技能的冒险任务</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quest-category">
+                    <div class="quest-type-header elite">
+                        <span class="quest-icon">🏆</span>
+                        <h4>精英任务</h4>
+                        <span class="difficulty-badge hard">困难</span>
+                    </div>
+                    <div class="quest-input">
+                        <input type="number" id="difficult" min="0" value="0" class="quest-counter">
+                        <div class="quest-info">
+                            <span class="reward">+5 经验/个</span>
+                            <span class="description">高难度挑战任务，丰厚奖励</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <!-- 冒险者状态 -->
+        <div class="adventurer-status">
+            <div class="status-section">
+                <h4><span>📊</span> 当前状态</h4>
+                <div class="status-inputs">
+                    <div class="status-item">
+                        <label>当前等级:</label>
+                        <input type="number" id="currentLevel" min="1" value="1" onchange="updateLevelInfo()">
+                    </div>
+                    <div class="status-item">
+                        <label>等级经验:</label>
+                        <input type="number" id="currentLevelExp" min="0" value="0">
+                        <span class="level-exp-info" id="levelExpInfo">当前等级内的经验值 (最大: 10)</span>
+                    </div>
+                    <div class="status-item penalty">
+                        <label>失败惩罚:</label>
+                        <input type="number" id="penalty" min="0" value="0">
+                        <span class="penalty-info">任务失败扣除的经验值</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 提交任务按钮 -->
+        <div class="submit-section">
+            <button class="submit-quest-btn" onclick="calculateLevelUp()">
+                <span class="btn-icon">📜</span>
+                <span class="btn-text">提交任务报告</span>
+                <span class="btn-subtitle">计算经验奖励</span>
+            </button>
+        </div>
+
+        <!-- 任务报告（结果） -->
+        <div id="questReport" class="quest-report hidden">
+            <div class="report-header">
+                <h3><span>📊</span> 任务完成报告</h3>
+            </div>
             
+            <div id="levelUpNotification" class="level-notification hidden"></div>
+            
+            <div class="report-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-info">
+                        <span class="stat-label">完成任务</span>
+                        <span class="stat-value" id="totalTasks">0</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">✨</div>
+                    <div class="stat-info">
+                        <span class="stat-label">获得经验</span>
+                        <span class="stat-value" id="gainedExp">0</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card penalty-card" id="penaltyExpDisplay" style="display: none;">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-info">
+                        <span class="stat-label">失败惩罚</span>
+                        <span class="stat-value penalty" id="penaltyExpValue">0</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <span class="stat-label">总经验</span>
+                        <span class="stat-value" id="totalExp">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="level-progress-section">
+                <div class="current-level-display">
+                    <span class="level-badge" id="resultLevel">等级 1</span>
+                </div>
+                <div class="progress-info">
+                    <span>距离下一级还需: <strong id="nextLevelExp">0</strong> 经验</span>
+                </div>
+                <div class="level-progress">
+                    <div class="level-progress-bar" id="progressBar" style="width: 0%">
+                        <div class="level-progress-text" id="progressText">0%</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="exp-breakdown">
-                <h4>🎯 经验详细分解</h4>
-                <div class="exp-item" id="commonExpDetail">
-                    <span>普通任务经验：</span>
-                    <span>0</span>
-                </div>
-                <div class="exp-item" id="intermediateExpDetail">
-                    <span>中等任务经验：</span>
-                    <span>0</span>
-                </div>
-                <div class="exp-item" id="difficultExpDetail">
-                    <span>困难任务经验：</span>
-                    <span>0</span>
+                <h4><span>🎯</span> 经验详细分解</h4>
+                <div class="breakdown-list">
+                    <div class="breakdown-item" id="commonExpDetail">
+                        <span class="breakdown-label">日常任务:</span>
+                        <span class="breakdown-value">0</span>
+                    </div>
+                    <div class="breakdown-item" id="intermediateExpDetail">
+                        <span class="breakdown-label">冒险任务:</span>
+                        <span class="breakdown-value">0</span>
+                    </div>
+                    <div class="breakdown-item" id="difficultExpDetail">
+                        <span class="breakdown-label">精英任务:</span>
+                        <span class="breakdown-value">0</span>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- 提示消息区 -->
+        <div id="roleMessage" class="guild-message hidden"></div>
     </div>
 
     <!-- 头像上传模态框 -->
@@ -803,22 +1539,44 @@
         // 全局变量
         let currentRole = '默认角色';
         
-        // 角色数据管理
+        // 职业配置
+        const characterClasses = {
+            warrior: { name: '战士', emoji: '🛡️', color: '#dc3545' },
+            mage: { name: '法师', emoji: '🔮', color: '#6f42c1' },
+            rogue: { name: '盗贼', emoji: '🗡️', color: '#6c757d' },
+            healer: { name: '治疗师', emoji: '✨', color: '#20c997' },
+            archer: { name: '弓箭手', emoji: '🏹', color: '#fd7e14' },
+            scholar: { name: '学者', emoji: '📚', color: '#0dcaf0' }
+        };
+        
+        // 默认头像生成器
+        function generateDefaultAvatar(className, characterName) {
+            const classInfo = characterClasses[className] || characterClasses.warrior;
+            const emojiSvg = `
+                <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="50" fill="${classInfo.color}"/>
+                    <text x="50" y="65" fill="white" font-family="Arial" font-size="40" text-anchor="middle">${classInfo.emoji}</text>
+                </svg>
+            `;
+            return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(emojiSvg)));
+        }
+        
+        // 角色数据管理（扩展支持职业）
         const RoleManager = {
             // 获取所有角色列表
             getAllRoles() {
-                const roles = localStorage.getItem('taskCalculator_roles');
+                const roles = localStorage.getItem('guildAdventurers_roles');
                 return roles ? JSON.parse(roles) : ['默认角色'];
             },
             
             // 保存角色列表
             saveRoles(roles) {
-                localStorage.setItem('taskCalculator_roles', JSON.stringify(roles));
+                localStorage.setItem('guildAdventurers_roles', JSON.stringify(roles));
             },
             
             // 获取角色数据
             getRoleData(roleName) {
-                const data = localStorage.getItem(`taskCalculator_${roleName}`);
+                const data = localStorage.getItem(`guildAdventurers_${roleName}`);
                 return data ? JSON.parse(data) : {
                     common: 0,
                     intermediate: 0,
@@ -827,18 +1585,19 @@
                     currentLevelExp: 0,
                     penalty: 0,
                     history: [],
-                    avatar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiM2NjdlZWEiLz4KPHN2ZyB4PSIyMCIgeT0iMTAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI2MCI+Cjx0ZXh0IHg9IjIwIiB5PSIzNSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+QpTwvdGV4dD4KPC9zdmc+Cjwvc3ZnPgo=',
-                    signature: ''
+                    avatar: generateDefaultAvatar('warrior', roleName),
+                    signature: '',
+                    characterClass: 'warrior'
                 };
             },
             
             // 保存角色数据
             saveRoleData(roleName, data) {
-                localStorage.setItem(`taskCalculator_${roleName}`, JSON.stringify(data));
+                localStorage.setItem(`guildAdventurers_${roleName}`, JSON.stringify(data));
             },
             
             // 创建新角色
-            createRole(roleName) {
+            createRole(roleName, characterClass = 'warrior') {
                 const roles = this.getAllRoles();
                 if (roles.includes(roleName)) {
                     return false; // 角色已存在
@@ -855,8 +1614,9 @@
                     currentLevelExp: 0,
                     penalty: 0,
                     history: [],
-                    avatar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiM2NjdlZWEiLz4KPHN2ZyB4PSIyMCIgeT0iMTAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI2MCI+Cjx0ZXh0IHg9IjIwIiB5PSIzNSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+QpTwvdGV4dD4KPC9zdmc+Cjwvc3ZnPgo=',
-                    signature: ''
+                    avatar: generateDefaultAvatar(characterClass, roleName),
+                    signature: '',
+                    characterClass: characterClass
                 });
                 return true;
             },
@@ -870,14 +1630,113 @@
                 if (index > -1) {
                     roles.splice(index, 1);
                     this.saveRoles(roles);
-                    localStorage.removeItem(`taskCalculator_${roleName}`);
+                    localStorage.removeItem(`guildAdventurers_${roleName}`);
                     return true;
                 }
                 return false;
             }
         };
         
-        // 头像和签名管理
+        // RPG角色选择界面管理
+        const CharacterSelect = {
+            init() {
+                this.loadCharacterList();
+                this.bindEvents();
+            },
+            
+            loadCharacterList() {
+                const roles = RoleManager.getAllRoles();
+                const characterList = document.getElementById('characterList');
+                characterList.innerHTML = '';
+                
+                roles.forEach(roleName => {
+                    const roleData = RoleManager.getRoleData(roleName);
+                    const classInfo = characterClasses[roleData.characterClass] || characterClasses.warrior;
+                    
+                    const characterCard = document.createElement('div');
+                    characterCard.style.cssText = `
+                        background: white;
+                        border-radius: 15px;
+                        padding: 15px;
+                        text-align: center;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        border: 3px solid transparent;
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                        min-width: 120px;
+                    `;
+                    
+                    characterCard.innerHTML = `
+                        <img src="${roleData.avatar}" style="width:60px;height:60px;border-radius:50%;margin-bottom:8px;border:2px solid ${classInfo.color};">
+                        <div style="font-weight:bold;color:#333;font-size:14px;margin-bottom:4px;">${roleName}</div>
+                        <div style="color:${classInfo.color};font-size:12px;">${classInfo.emoji} ${classInfo.name}</div>
+                        <div style="color:#666;font-size:11px;">等级 ${roleData.currentLevel}</div>
+                    `;
+                    
+                    characterCard.addEventListener('click', () => this.selectCharacter(roleName));
+                    characterCard.addEventListener('mouseenter', () => {
+                        characterCard.style.transform = 'translateY(-5px)';
+                        characterCard.style.borderColor = classInfo.color;
+                        characterCard.style.boxShadow = `0 8px 16px rgba(0,0,0,0.2)`;
+                    });
+                    characterCard.addEventListener('mouseleave', () => {
+                        characterCard.style.transform = 'translateY(0)';
+                        characterCard.style.borderColor = 'transparent';
+                        characterCard.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                    });
+                    
+                    characterList.appendChild(characterCard);
+                });
+            },
+            
+            bindEvents() {
+                document.getElementById('addCharacterBtn').addEventListener('click', () => {
+                    document.getElementById('newCharacterForm').style.display = 'block';
+                });
+                
+                document.getElementById('confirmNewCharacterBtn').addEventListener('click', () => {
+                    this.createNewCharacter();
+                });
+                
+                document.getElementById('newCharacterName').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.createNewCharacter();
+                    }
+                });
+            },
+            
+            createNewCharacter() {
+                const nameInput = document.getElementById('newCharacterName');
+                const classSelect = document.getElementById('newCharacterClass');
+                const name = nameInput.value.trim();
+                const characterClass = classSelect.value;
+                
+                if (!name) {
+                    alert('请输入角色名称！');
+                    return;
+                }
+                
+                if (RoleManager.createRole(name, characterClass)) {
+                    this.loadCharacterList();
+                    nameInput.value = '';
+                    document.getElementById('newCharacterForm').style.display = 'none';
+                    alert(`冒险者 "${name}" 成功加入工会！`);
+                } else {
+                    alert(`角色名称 "${name}" 已存在！`);
+                }
+            },
+            
+            selectCharacter(roleName) {
+                // 关闭角色选择界面
+                document.getElementById('characterSelectModal').style.display = 'none';
+                // 显示主游戏界面
+                document.getElementById('guildMain').style.display = 'block';
+                // 切换到选中的角色
+                switchToRole(roleName);
+            }
+        };
+        
+        // 头像和签名管理（保持原有功能）
         let currentAvatarMethod = '';
         let tempAvatarUrl = '';
         
@@ -916,11 +1775,12 @@
             } else if (method === 'emoji') {
                 document.getElementById('emojiSection').classList.remove('hidden');
             } else if (method === 'default') {
-                tempAvatarUrl = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiM2NjdlZWEiLz4KPHN2ZyB4PSIyMCIgeT0iMTAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI2MCI+Cjx0ZXh0IHg9IjIwIiB5PSIzNSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+QpTwvdGV4dD4KPC9zdmc+Cjwvc3ZnPgo=';
+                const data = RoleManager.getRoleData(currentRole);
+                tempAvatarUrl = generateDefaultAvatar(data.characterClass || 'warrior', currentRole);
             }
         }
         
-        // 文件上传处理函数
+        // 文件上传处理函数（保持原有）
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -974,9 +1834,9 @@
         function selectEmoji(emoji) {
             // 创建emoji头像的SVG
             const emojiSvg = `
-                <svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="40" cy="40" r="40" fill="#f0f0f0"/>
-                    <text x="40" y="50" fill="#333" font-family="Arial" font-size="32" text-anchor="middle">${emoji}</text>
+                <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="50" fill="#f0f0f0"/>
+                    <text x="50" y="65" fill="#333" font-family="Arial" font-size="40" text-anchor="middle">${emoji}</text>
                 </svg>
             `;
             tempAvatarUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(emojiSvg)));
@@ -1009,7 +1869,8 @@
                 }
                 // 本地文件已经通过handleFileSelect处理，直接保存
             } else if (currentAvatarMethod === 'default') {
-                tempAvatarUrl = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiM2NjdlZWEiLz4KPHN2ZyB4PSIyMCIgeT0iMTAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI2MCI+Cjx0ZXh0IHg9IjIwIiB5PSIzNSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+QpTwvdGV4dD4KPC9zdmc+Cjwvc3ZnPgo=';
+                const data = RoleManager.getRoleData(currentRole);
+                tempAvatarUrl = generateDefaultAvatar(data.characterClass || 'warrior', currentRole);
             }
             
             if (!tempAvatarUrl) {
@@ -1035,7 +1896,7 @@
         
         function editSignature() {
             const currentSignature = RoleManager.getRoleData(currentRole).signature || '';
-            const newSignature = prompt('请输入个性签名：', currentSignature);
+            const newSignature = prompt('请输入冒险者宣言：', currentSignature);
             
             if (newSignature !== null) { // 用户没有取消
                 const data = RoleManager.getRoleData(currentRole);
@@ -1043,7 +1904,7 @@
                 RoleManager.saveRoleData(currentRole, data);
                 
                 updateSignatureDisplay(data.signature);
-                showMessage('个性签名更新成功！');
+                showMessage('冒险者宣言更新成功！');
             }
         }
         
@@ -1053,7 +1914,7 @@
                 signatureElement.textContent = signature;
                 signatureElement.classList.remove('empty');
             } else {
-                signatureElement.textContent = '点击设置个性签名...';
+                signatureElement.textContent = '点击设置冒险者宣言...';
                 signatureElement.classList.add('empty');
             }
         }
@@ -1062,23 +1923,41 @@
             // 更新角色名称
             document.getElementById('roleDisplayName').textContent = roleName;
             
+            // 更新职业显示
+            const classInfo = characterClasses[data.characterClass] || characterClasses.warrior;
+            document.getElementById('classDisplay').textContent = classInfo.name;
+            document.getElementById('classBadge').textContent = classInfo.emoji;
+            document.getElementById('classBadge').style.background = classInfo.color;
+            
+            // 更新等级显示
+            document.getElementById('levelText').textContent = `等级 ${data.currentLevel || 1}`;
+            
+            // 更新经验条
+            const currentLevel = data.currentLevel || 1;
+            const currentLevelExp = data.currentLevelExp || 0;
+            const maxExpForLevel = getExpForLevel(currentLevel);
+            const expPercent = (currentLevelExp / maxExpForLevel) * 100;
+            
+            document.getElementById('expFill').style.width = `${expPercent}%`;
+            document.getElementById('expText').textContent = `${currentLevelExp}/${maxExpForLevel}`;
+            
             // 更新头像
             const avatarImg = document.getElementById('roleAvatar');
             if (data.avatar) {
                 avatarImg.src = data.avatar;
             } else {
-                avatarImg.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiM2NjdlZWEiLz4KPHN2ZyB4PSIyMCIgeT0iMTAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI2MCI+Cjx0ZXh0IHg9IjIwIiB5PSIzNSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+QpTwvdGV4dD4KPC9zdmc+Cjwvc3ZnPgo=';
+                avatarImg.src = generateDefaultAvatar(data.characterClass || 'warrior', roleName);
             }
             
             // 更新个性签名
             updateSignatureDisplay(data.signature);
         }
-        
         // UI 交互函数
         function showMessage(text, isError = false) {
             const messageDiv = document.getElementById('roleMessage');
             messageDiv.textContent = text;
-            messageDiv.className = `role-message ${isError ? 'error' : ''}`;
+            messageDiv.className = `guild-message ${isError ? 'error' : ''}`;
+            messageDiv.classList.remove('hidden');
             
             // 3秒后自动隐藏
             setTimeout(() => {
@@ -1087,31 +1966,22 @@
         }
         
         function showAddRoleDialog() {
-            const roleName = prompt('请输入角色名称：');
-            if (!roleName || !roleName.trim()) {
-                return;
-            }
-            
-            const trimmedName = roleName.trim();
-            if (RoleManager.createRole(trimmedName)) {
-                updateRoleSelector();
-                switchToRole(trimmedName);
-                showMessage(`角色"${trimmedName}"创建成功！`);
-            } else {
-                showMessage(`角色"${trimmedName}"已存在！`, true);
-            }
+            // 这里集成到角色选择界面，显示创建表单
+            document.getElementById('characterSelectModal').style.display = 'flex';
+            CharacterSelect.loadCharacterList();
+            document.getElementById('newCharacterForm').style.display = 'block';
         }
         
         function deleteCurrentRole() {
             if (currentRole === '默认角色') return;
             
-            const confirmed = confirm(`确定删除角色"${currentRole}"？\n数据将不可恢复！`);
+            const confirmed = confirm(`确定让 "${currentRole}" 退出冒险家工会？\n所有数据将不可恢复！`);
             if (confirmed) {
                 const deletedRole = currentRole;
                 if (RoleManager.deleteRole(currentRole)) {
                     updateRoleSelector();
                     switchToRole('默认角色');
-                    showMessage(`角色"${deletedRole}"已删除`);
+                    showMessage(`${deletedRole} 已退出工会`);
                 }
             }
         }
@@ -1125,9 +1995,11 @@
             
             // 添加所有角色选项
             roles.forEach(role => {
+                const roleData = RoleManager.getRoleData(role);
+                const classInfo = characterClasses[roleData.characterClass] || characterClasses.warrior;
                 const option = document.createElement('option');
                 option.value = role;
-                option.textContent = role;
+                option.textContent = `${role} (${classInfo.name})`;
                 if (role === currentRole) {
                     option.selected = true;
                 }
@@ -1136,7 +2008,7 @@
             
             // 更新删除按钮显示状态
             const deleteBtn = document.getElementById('deleteRoleBtn');
-            deleteBtn.style.display = currentRole === '默认角色' ? 'none' : 'inline-block';
+            deleteBtn.style.display = currentRole === '默认角色' ? 'none' : 'inline-flex';
         }
         
         function switchRole() {
@@ -1159,14 +2031,16 @@
             updateRoleSelector();
             
             // 添加数据更新动画
-            const inputSection = document.querySelector('.input-section');
-            inputSection.classList.add('data-transition');
+            const questBoard = document.querySelector('.quest-board');
+            questBoard.style.opacity = '0.7';
+            questBoard.style.transform = 'scale(0.98)';
             setTimeout(() => {
-                inputSection.classList.remove('data-transition');
+                questBoard.style.opacity = '1';
+                questBoard.style.transform = 'scale(1)';
             }, 300);
             
             // 如果结果区域是显示的，重新计算
-            if (!document.getElementById('results').classList.contains('hidden')) {
+            if (!document.getElementById('questReport').classList.contains('hidden')) {
                 calculateLevelUp();
             }
         }
@@ -1181,8 +2055,9 @@
                 currentLevelExp: parseInt(document.getElementById('currentLevelExp').value) || 0,
                 penalty: parseInt(document.getElementById('penalty').value) || 0,
                 history: currentData.history || [],
-                avatar: currentData.avatar || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiM2NjdlZWEiLz4KPHN2ZyB4PSIyMCIgeT0iMTAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI2MCI+Cjx0ZXh0IHg9IjIwIiB5PSIzNSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+QpTwvdGV4dD4KPC9zdmc+Cjwvc3ZnPgo=',
-                signature: currentData.signature || ''
+                avatar: currentData.avatar || generateDefaultAvatar(currentData.characterClass || 'warrior', currentRole),
+                signature: currentData.signature || '',
+                characterClass: currentData.characterClass || 'warrior'
             };
             RoleManager.saveRoleData(currentRole, data);
         }
@@ -1204,7 +2079,7 @@
             updateLevelInfo();
             
             // 隐藏结果区域
-            document.getElementById('results').classList.add('hidden');
+            document.getElementById('questReport').classList.add('hidden');
         }
         
         function getExpForLevel(level) {
@@ -1276,23 +2151,23 @@
                 // 验证当前等级经验不能超过该等级所需经验
                 const maxExpForCurrentLevel = getExpForLevel(currentLevel);
                 if (currentLevelExp >= maxExpForCurrentLevel) {
-                    alert(`当前等级${currentLevel}最多需要${maxExpForCurrentLevel}经验，您输入的经验值过大！`);
+                    alert(`等级${currentLevel}最多需要${maxExpForCurrentLevel}经验，您输入的经验值过大！`);
                     return;
                 }
                 
                 // 计算当前总经验
                 const currentTotalExp = calculateTotalExp(currentLevel, currentLevelExp);
             
-            // 计算经验值（基于更新后的系统设计）
-            // 普通任务：2经验 - 适合日常基础任务
-            // 中等任务：3经验 - 需要一定技能或时间投入
-            // 困难任务：5经验 - 具有挑战性的复杂任务
+            // 计算经验值（工会任务奖励）
+            // 日常任务：2经验 - 基础委托任务
+            // 冒险任务：3经验 - 需要一定冒险技能
+            // 精英任务：5经验 - 高难度挑战任务
             const commonExp = commonTasks * 2;
             const intermediateExp = intermediateTasks * 3;
             const difficultExp = difficultTasks * 5;
             
             const gainedExp = commonExp + intermediateExp + difficultExp;
-            // 计算最终经验：当前经验 + 获得经验 - 惩罚经验
+            // 计算最终经验：当前经验 + 获得经验 - 失败惩罚
             const finalTotalExp = Math.max(0, currentTotalExp + gainedExp - penaltyExp);
             const totalTasks = commonTasks + intermediateTasks + difficultTasks;
             const netExpChange = gainedExp - penaltyExp;
@@ -1319,12 +2194,12 @@
             document.getElementById('totalExp').textContent = finalTotalExp;
             document.getElementById('resultLevel').textContent = `等级 ${newLevelInfo.level}`;
             document.getElementById('nextLevelExp').textContent = 
-                `${newLevelInfo.expNeededForNext - newLevelInfo.expInCurrentLevel} 经验`;
+                `${newLevelInfo.expNeededForNext - newLevelInfo.expInCurrentLevel}`;
             
             // 显示或隐藏惩罚信息
             const penaltyDisplay = document.getElementById('penaltyExpDisplay');
             if (penaltyExp > 0) {
-                penaltyDisplay.style.display = 'flex';
+                penaltyDisplay.style.display = 'block';
                 document.getElementById('penaltyExpValue').textContent = penaltyExp;
             } else {
                 penaltyDisplay.style.display = 'none';
@@ -1336,32 +2211,34 @@
             document.getElementById('progressText').textContent = 
                 `${newLevelInfo.expInCurrentLevel}/${newLevelInfo.expNeededForNext} (${Math.round(progressPercent)}%)`;
             
-            // 更新经验详细分解
+            // 更新任务经验详细分解
             document.getElementById('commonExpDetail').innerHTML = 
-                `<span>普通任务经验：</span><span>${commonTasks} × 2 = ${commonExp}</span>`;
+                `<span class="breakdown-label">日常任务:</span><span class="breakdown-value">${commonTasks} × 2 = ${commonExp}</span>`;
             document.getElementById('intermediateExpDetail').innerHTML = 
-                `<span>中等任务经验：</span><span>${intermediateTasks} × 3 = ${intermediateExp}</span>`;
+                `<span class="breakdown-label">冒险任务:</span><span class="breakdown-value">${intermediateTasks} × 3 = ${intermediateExp}</span>`;
             document.getElementById('difficultExpDetail').innerHTML = 
-                `<span>困难任务经验：</span><span>${difficultTasks} × 5 = ${difficultExp}</span>`;
+                `<span class="breakdown-label">精英任务:</span><span class="breakdown-value">${difficultTasks} × 5 = ${difficultExp}</span>`;
             
             // 添加惩罚和净经验显示
             let penaltyDetailHtml = '';
             if (penaltyExp > 0) {
                 penaltyDetailHtml = `
-                    <div class="exp-item" style="color: #dc3545;">
-                        <span>惩罚扣除经验：</span><span>-${penaltyExp}</span>
+                    <div class="breakdown-item" style="background: #fff8f0; border-color: #fd7e14;">
+                        <span class="breakdown-label" style="color: #dc3545;">失败惩罚:</span>
+                        <span class="breakdown-value" style="color: #dc3545;">-${penaltyExp}</span>
                     </div>
                 `;
             }
             
             const netExpDetailHtml = `
-                <div class="exp-item" style="border-top: 2px solid #dee2e6; font-weight: bold; ${netExpChange >= 0 ? 'color: #28a745;' : 'color: #dc3545;'}">
-                    <span>净经验变化：</span><span>${netExpChange >= 0 ? '+' : ''}${netExpChange}</span>
+                <div class="breakdown-item" style="border-top: 3px solid #667eea; background: #f0f0ff; font-weight: bold;">
+                    <span class="breakdown-label" style="${netExpChange >= 0 ? 'color: #28a745;' : 'color: #dc3545;'}">净经验变化:</span>
+                    <span class="breakdown-value" style="${netExpChange >= 0 ? 'color: #28a745;' : 'color: #dc3545;'}">${netExpChange >= 0 ? '+' : ''}${netExpChange}</span>
                 </div>
             `;
             
             // 插入惩罚和净经验信息
-            const expBreakdown = document.querySelector('.exp-breakdown');
+            const breakdownList = document.querySelector('.breakdown-list');
             if (document.getElementById('penaltyDetail')) {
                 document.getElementById('penaltyDetail').remove();
             }
@@ -1370,38 +2247,38 @@
             }
             
             if (penaltyExp > 0) {
-                expBreakdown.insertAdjacentHTML('beforeend', `<div id="penaltyDetail">${penaltyDetailHtml}</div>`);
+                breakdownList.insertAdjacentHTML('beforeend', `<div id="penaltyDetail">${penaltyDetailHtml}</div>`);
             }
-            expBreakdown.insertAdjacentHTML('beforeend', `<div id="netExpDetail">${netExpDetailHtml}</div>`);
+            breakdownList.insertAdjacentHTML('beforeend', `<div id="netExpDetail">${netExpDetailHtml}</div>`);
             
             // 检查是否升级或降级
-            const levelUpNotification = document.getElementById('levelUpNotification');
+            const levelNotification = document.getElementById('levelUpNotification');
             if (newLevelInfo.level > oldLevelInfo.level) {
                 // 升级情况
-                levelUpNotification.classList.remove('hidden');
-                levelUpNotification.className = 'level-up-animation';
-                levelUpNotification.innerHTML = 
-                    `<p class="level-up-text">🎉 恭喜！从等级 ${oldLevelInfo.level} 升级到等级 ${newLevelInfo.level}！</p>`;
+                levelNotification.classList.remove('hidden');
+                levelNotification.className = 'level-notification level-up';
+                levelNotification.innerHTML = 
+                    `🎉 恭喜！从等级 ${oldLevelInfo.level} 晋升到等级 ${newLevelInfo.level}！<br><small>冒险者声望提升！</small>`;
             } else if (newLevelInfo.level < oldLevelInfo.level) {
                 // 降级情况
-                levelUpNotification.classList.remove('hidden');
-                levelUpNotification.className = 'level-down-animation';
-                levelUpNotification.innerHTML = 
-                    `<p class="level-down-text">⚠️ 由于惩罚，从等级 ${oldLevelInfo.level} 降级到等级 ${newLevelInfo.level}！</p>`;
+                levelNotification.classList.remove('hidden');
+                levelNotification.className = 'level-notification level-down';
+                levelNotification.innerHTML = 
+                    `⚠️ 由于任务失败，从等级 ${oldLevelInfo.level} 降级到等级 ${newLevelInfo.level}<br><small>继续努力，重新证明自己！</small>`;
             } else {
                 // 等级没变
-                levelUpNotification.classList.add('hidden');
+                levelNotification.classList.add('hidden');
             }
             
             // 如果有惩罚且经验为0，显示特殊警告
             if (penaltyExp > 0 && finalTotalExp === 0) {
                 const warningHtml = `
-                    <div class="penalty-warning">
-                        ⚠️ 警告：惩罚过重，经验值已降至最低点！
+                    <div class="penalty-warning" style="background: linear-gradient(45deg, #dc3545, #fd7e14); color: white; padding: 15px; border-radius: 10px; margin: 15px 0; text-align: center; font-weight: 600;">
+                        ⚠️ 警告：连续失败导致经验清零！请重新开始冒险之旅！
                     </div>
                 `;
                 if (!document.getElementById('penaltyWarning')) {
-                    levelUpNotification.insertAdjacentHTML('afterend', `<div id="penaltyWarning">${warningHtml}</div>`);
+                    levelNotification.insertAdjacentHTML('afterend', `<div id="penaltyWarning">${warningHtml}</div>`);
                 }
             } else {
                 const existingWarning = document.getElementById('penaltyWarning');
@@ -1410,14 +2287,14 @@
                 }
             }
             
-            // 显示结果区域
-            document.getElementById('results').classList.remove('hidden');
+            // 显示任务报告区域
+            document.getElementById('questReport').classList.remove('hidden');
             
             // 滚动到结果区域
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('questReport').scrollIntoView({ behavior: 'smooth' });
         } catch (error) {
             console.error('计算过程中出现错误:', error);
-            alert('计算过程中出现错误，请检查输入值');
+            alert('任务报告计算失败，请检查输入值');
         }
     }
         
@@ -1450,20 +2327,31 @@
                 // 自动保存当前角色数据
                 saveCurrentRoleData();
                 
-                if (document.getElementById('results').classList.contains('hidden')) {
+                if (document.getElementById('questReport').classList.contains('hidden')) {
                     return;
                 }
                 calculateLevelUp();
             });
         });
         
-        // 页面加载时初始化等级信息
+        // 页面加载时初始化
         window.onload = function() {
-            // 初始化角色管理
-            currentRole = '默认角色';
-            updateRoleSelector();
-            loadRoleData(currentRole);
-            updateLevelInfo();
+            // 检查是否有现有角色，如果没有则显示角色选择界面
+            const roles = RoleManager.getAllRoles();
+            if (roles.length === 1 && roles[0] === '默认角色') {
+                // 只有默认角色，显示角色选择界面
+                CharacterSelect.init();
+            } else {
+                // 有多个角色，直接进入游戏
+                currentRole = roles[0];
+                document.getElementById('characterSelectModal').style.display = 'none';
+                document.getElementById('guildMain').style.display = 'block';
+                
+                // 初始化角色管理
+                updateRoleSelector();
+                loadRoleData(currentRole);
+                updateLevelInfo();
+            }
             
             // 添加模态框关闭事件监听器
             window.onclick = function(event) {
