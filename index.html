@@ -3076,6 +3076,49 @@
                 const typing = { role: 'assistant', content: '', typing: true };
                 state.messages.push(typing); render();
 
+                // 检查是否选择了智能模拟模式
+                if (state.currentModel === 'simulation') {
+                    console.log('使用智能模拟模式');
+                    state.messages = state.messages.filter(m => !m.typing);
+                    
+                    // 偶尔提示当前状态
+                    const shouldShowNotice = Math.random() < 0.2;
+                    let reply;
+                    
+                    if (shouldShowNotice) {
+                        const simulationNotices = [
+                            '凯瑟琳：当前使用本地智能模拟模式，所有功能正常运行~ 请继续您的冒险！',
+                            '凯瑟琳：智能模拟模式已启用，我会尽力为您提供帮助！',
+                            '凯瑟琳：本地智能系统运行正常，有什么需要帮助的吗？'
+                        ];
+                        reply = simulationNotices[Math.floor(Math.random() * simulationNotices.length)];
+                    } else {
+                        reply = generateLocalKatherineReply(text, state.messages);
+                    }
+                    
+                    // 模拟打字效果
+                    let displayText = '';
+                    const words = reply.split('');
+                    let i = 0;
+                    
+                    const typeInterval = setInterval(() => {
+                        if (i < words.length) {
+                            displayText += words[i];
+                            state.messages = state.messages.filter(m => !m.typing);
+                            state.messages.push({ role: 'assistant', content: displayText, typing: true });
+                            render();
+                            i++;
+                        } else {
+                            clearInterval(typeInterval);
+                            state.messages = state.messages.filter(m => !m.typing);
+                            append('assistant', reply);
+                        }
+                    }, 30); // 打字速度
+                    
+                    state.sending = false;
+                    return;
+                }
+
                 try {
                     const payload = buildPayload();
                     payload.messages.push({ role: 'user', content: text });
