@@ -2007,6 +2007,10 @@
         // RPG角色选择界面管理
         const CharacterSelect = {
             init() {
+                // 显示角色选择模态框
+                document.getElementById('characterSelectModal').style.display = 'flex';
+                document.getElementById('guildMain').style.display = 'none';
+                
                 this.loadCharacterList();
                 this.bindEvents();
             },
@@ -2708,22 +2712,8 @@
         
         // 页面加载时初始化
         window.onload = function() {
-            // 检查是否有现有角色，如果没有则显示角色选择界面
-            const roles = RoleManager.getAllRoles();
-            if (roles.length === 1 && roles[0] === '默认角色') {
-                // 只有默认角色，显示角色选择界面
-                CharacterSelect.init();
-            } else {
-                // 有多个角色，直接进入游戏
-                currentRole = roles[0];
-                document.getElementById('characterSelectModal').style.display = 'none';
-                document.getElementById('guildMain').style.display = 'block';
-                
-                // 初始化角色管理
-                updateRoleSelector();
-                loadRoleData(currentRole);
-                updateLevelInfo();
-            }
+            // 总是显示角色选择界面，让用户选择角色
+            CharacterSelect.init();
             
             // 添加模态框关闭事件监听器
             window.onclick = function(event) {
