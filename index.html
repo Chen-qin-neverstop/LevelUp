@@ -1209,6 +1209,313 @@
             background: #f0f0f0;
             transform: scale(1.1);
         }
+
+        /* 工会接待员（凯瑟琳）聊天组件 */
+        .receptionist-toggle-btn {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+            cursor: pointer;
+            z-index: 10000;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .receptionist-panel {
+            position: fixed;
+            right: 24px;
+            bottom: 96px;
+            width: 340px;
+            max-height: 60vh;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            border: 2px solid rgba(118,75,162,0.2);
+            z-index: 1000;
+        }
+
+        .receptionist-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .receptionist-header .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255,255,255,0.6);
+            font-size: 16px;
+        }
+
+        .receptionist-title {
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .receptionist-subtitle {
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        .receptionist-messages {
+            padding: 12px;
+            overflow-y: auto;
+            background: #f7f8fc;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .msg-row { display: flex; gap: 8px; }
+        .msg-row.assistant { justify-content: flex-start; }
+        .msg-row.user { justify-content: flex-end; }
+
+        .msg-bubble {
+            max-width: 75%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .msg-bubble.assistant {
+            background: #ffffff;
+            border: 1px solid #e8e8f3;
+            color: #333;
+        }
+
+        .msg-bubble.user {
+            background: #667eea;
+            color: #fff;
+        }
+
+        .msg-row.system { justify-content: center; }
+        .msg-bubble.system {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            color: #0066cc;
+            font-size: 12px;
+            padding: 6px 10px;
+            margin: 4px 0;
+            text-align: center;
+        }
+
+        /* 模型选择器样式 */
+        .model-selector {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            padding: 10px 12px;
+        }
+
+        .model-selector label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 4px;
+        }
+
+        .model-select {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 12px;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .model-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102,126,234,0.25);
+        }
+
+        .model-select option:disabled {
+            color: #6c757d;
+            background: #f8f9fa;
+        }
+
+        .model-info {
+            font-size: 11px;
+            color: #6c757d;
+            margin-top: 4px;
+            line-height: 1.3;
+        }
+
+        .model-info.enabled {
+            color: #28a745;
+        }
+
+        .model-info.disabled {
+            color: #dc3545;
+        }
+
+        /* 角色选择器样式 */
+        .character-selector {
+            background: #fff3cd;
+            border-bottom: 1px solid #ffeaa7;
+            padding: 10px 12px;
+        }
+
+        .character-selector label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 4px;
+        }
+
+        .character-select {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            font-size: 12px;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .character-select:focus {
+            outline: none;
+            border-color: #ffa500;
+            box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.25);
+        }
+
+        .character-info {
+            font-size: 11px;
+            color: #856404;
+            margin-top: 4px;
+            line-height: 1.3;
+        }
+
+        /* 自定义角色面板样式 */
+        .custom-character-panel {
+            background: #d1ecf1;
+            border-bottom: 1px solid #bee5eb;
+            padding: 12px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .custom-character-form .form-group {
+            margin-bottom: 12px;
+        }
+
+        .custom-character-form label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #0c5460;
+            margin-bottom: 4px;
+        }
+
+        .custom-character-form input,
+        .custom-character-form textarea {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #bee5eb;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: inherit;
+            resize: vertical;
+            box-sizing: border-box;
+            background: #fff;
+        }
+
+        .custom-character-form input:focus,
+        .custom-character-form textarea:focus {
+            outline: none;
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 2px rgba(23, 162, 184, 0.25);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .save-btn, .cancel-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .save-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #218838;
+        }
+
+        .cancel-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background: #5a6268;
+        }
+
+        .receptionist-input {
+            border-top: 1px solid #e9ecef;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+        }
+
+        .receptionist-input input[type="text"] {
+            flex: 1;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 13px;
+        }
+
+        .receptionist-input button {
+            border: none;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: #fff;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .typing { opacity: 0.7; font-style: italic; }
     </style>
 </head>
 <body>
@@ -1529,6 +1836,64 @@
                 <button class="modal-btn primary" onclick="confirmAvatar()">确认</button>
                 <button class="modal-btn secondary" onclick="closeAvatarModal()">取消</button>
             </div>
+        </div>
+    </div>
+
+    <!-- 工会接待员聊天组件（凯瑟琳） -->
+    <button id="receptionistToggle" class="receptionist-toggle-btn" title="工会接待员">
+        🛎️
+    </button>
+    <div id="receptionistPanel" class="receptionist-panel" aria-live="polite">
+        <div class="receptionist-header">
+            <div class="avatar">🛎️</div>
+            <div>
+                <div class="receptionist-title">凯瑟琳 · 工会接待</div>
+                <div class="receptionist-subtitle">冒险仍在继续~</div>
+            </div>
+        </div>
+        
+        <!-- 模型选择器 -->
+        <div class="model-selector">
+            <label for="receptionistModelSelect">🤖 AI模型:</label>
+            <select id="receptionistModelSelect" class="model-select">
+                <option value="simulation">智能模拟模式</option>
+            </select>
+            <div id="receptionistModelInfo" class="model-info">本地智能模拟，专为工会接待员优化</div>
+        </div>
+        
+        <!-- 角色选择器 -->
+        <div class="character-selector">
+            <label for="receptionistCharacterSelect">🎭 聊天角色:</label>
+            <select id="receptionistCharacterSelect" class="character-select">
+                <option value="凯瑟琳">凯瑟琳 (工会接待员)</option>
+                <option value="弗洛洛">弗洛洛 (鸣潮少女)</option>
+                <option value="自定义">自定义角色</option>
+            </select>
+            <div id="receptionistCharacterInfo" class="character-info">工会接待员，专业贴心</div>
+        </div>
+        
+        <!-- 自定义角色设置 -->
+        <div id="customCharacterPanel" class="custom-character-panel" style="display: none;">
+            <div class="custom-character-form">
+                <div class="form-group">
+                    <label for="customCharacterName">角色名称:</label>
+                    <input id="customCharacterName" type="text" placeholder="输入角色名称" maxlength="20" />
+                </div>
+                <div class="form-group">
+                    <label for="customCharacterPrompt">角色设定:</label>
+                    <textarea id="customCharacterPrompt" placeholder="请描述角色的性格、背景、说话方式等特征..." rows="4" maxlength="500"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button id="saveCustomCharacter" class="save-btn">保存</button>
+                    <button id="cancelCustomCharacter" class="cancel-btn">取消</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="receptionistMessages" class="receptionist-messages"></div>
+        <div class="receptionist-input">
+            <input id="receptionistInput" type="text" placeholder="向凯瑟琳提问，回车发送" />
+            <button id="receptionistSend">发送</button>
         </div>
     </div>
 
@@ -2029,6 +2394,11 @@
             // 加载新角色数据
             loadRoleData(roleName);
             
+            // 通知接待员会话切换角色
+            if (window.ChatAssistant && typeof window.ChatAssistant.onRoleSwitched === 'function') {
+                window.ChatAssistant.onRoleSwitched(roleName);
+            }
+
             // 更新UI
             updateRoleSelector();
             
@@ -2362,7 +2732,426 @@
                     closeAvatarModal();
                 }
             };
+
         };
+
+        // 工会接待员（凯瑟琳）前端控制器
+        window.ChatAssistant = (function(){
+            const storeKeyFor = (role) => `guildAdventurers_chat_${role || currentRole}`;
+
+            // 角色提示词配置
+            const characterPrompts = {
+                '凯瑟琳': {
+                    name: '凯瑟琳',
+                    description: '冒险家工会接待员',
+                    prompt: '你是"冒险家工会"的接待员凯瑟琳，语气礼貌、简短、贴心，称呼用户为"旅行者"或"冒险者"。在解答时偏向实用建议，避免敏感或不当话题。必要时可结合任务/等级/经验等设定进行拟态回复，以增强沉浸感。结尾可偶尔加一句"冒险仍在继续~"。'
+                },
+                '弗洛洛': {
+                    name: '弗洛洛',
+                    description: '鸣潮世界的可爱少女',
+                    prompt: '你是鸣潮世界中的弗洛洛，一个天真烂漫、充满好奇心的少女。你对这个世界充满了探索欲望，喜欢与别人分享有趣的发现。你的语气活泼可爱，经常使用"呀"、"哦"、"嗯嗯"等语气词，称呼用户为"指挥使"或直接叫名字。你热爱音乐和歌唱，偶尔会哼唱几句。你善良纯真，总是想要帮助别人，但有时会因为太过兴奋而说话很快。记住保持弗洛洛独特的个性特征。'
+                },
+                '自定义': {
+                    name: '自定义角色',
+                    description: '用户自定义的聊天角色',
+                    prompt: '你是一个友善的AI助手，根据用户的需求提供帮助和建议。保持礼貌、专业的态度。'
+                }
+            };
+
+            const state = {
+                isOpen: false,
+                sending: false,
+                messages: [],
+                models: [],
+                currentModel: 'simulation',
+                currentCharacter: '凯瑟琳'
+            };
+
+            const els = {
+                toggle: null,
+                panel: null,
+                list: null,
+                input: null,
+                send: null,
+                modelSelect: null,
+                modelInfo: null,
+                characterSelect: null,
+                characterInfo: null,
+                customPanel: null,
+                customName: null,
+                customPrompt: null,
+                saveCustom: null,
+                cancelCustom: null
+            };
+
+            function loadHistory(role) {
+                try {
+                    const raw = localStorage.getItem(storeKeyFor(role));
+                    state.messages = raw ? JSON.parse(raw) : [];
+                } catch { state.messages = []; }
+                render();
+            }
+
+            function saveHistory() {
+                try { localStorage.setItem(storeKeyFor(currentRole), JSON.stringify(state.messages.slice(-30))); } catch {}
+            }
+
+            // 加载可用模型列表
+            async function loadModels() {
+                try {
+                    const base = (location.protocol === 'file:') ? 'http://localhost:3000' : '';
+                    const res = await fetch(base + '/api/models');
+                    if (res.ok) {
+                        const data = await res.json();
+                        state.models = data.models;
+                        state.currentModel = data.currentModel;
+                        updateModelUI();
+                    }
+                } catch (err) {
+                    console.log('加载模型列表失败:', err);
+                }
+            }
+
+            // 切换模型
+            async function switchModel(modelId) {
+                if (state.sending) return;
+                
+                try {
+                    const base = (location.protocol === 'file:') ? 'http://localhost:3000' : '';
+                    const res = await fetch(base + '/api/switch-model', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ modelId })
+                    });
+                    
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.success) {
+                            state.currentModel = modelId;
+                            updateModelUI();
+                            
+                            // 添加系统消息
+                            const model = state.models.find(m => m.id === modelId);
+                            if (model) {
+                                append('system', `🔄 已切换到 ${model.name}`);
+                            }
+                        }
+                    }
+                } catch (err) {
+                    append('system', '❌ 模型切换失败，请稍后再试');
+                }
+            }
+
+            // 切换角色
+            function switchCharacter(characterKey) {
+                if (characterKey === '自定义') {
+                    showCustomCharacterPanel();
+                    return;
+                }
+                
+                if (characterPrompts[characterKey]) {
+                    state.currentCharacter = characterKey;
+                    updateCharacterUI();
+                    updateHeader();
+                    
+                    // 添加角色切换提示
+                    const character = characterPrompts[characterKey];
+                    append('system', `💫 已切换到 ${character.name}！`);
+                    
+                    // 角色问候语
+                    setTimeout(() => {
+                        if (characterKey === '弗洛洛') {
+                            append('assistant', '漂泊者，你来干什么？');
+                        } else if (characterKey === '凯瑟琳') {
+                            append('assistant', '凯瑟琳：冒险仍在继续~ 旅行者，请问需要登记任务、查询经验，或了解工会规则吗？');
+                        }
+                    }, 500);
+                }
+            }
+
+            // 显示自定义角色面板
+            function showCustomCharacterPanel() {
+                els.customPanel.style.display = 'block';
+                els.customName.focus();
+            }
+
+            // 隐藏自定义角色面板
+            function hideCustomCharacterPanel() {
+                els.customPanel.style.display = 'none';
+                els.characterSelect.value = state.currentCharacter;
+            }
+
+            // 保存自定义角色
+            function saveCustomCharacter() {
+                const name = els.customName.value.trim();
+                const prompt = els.customPrompt.value.trim();
+                
+                if (!name || !prompt) {
+                    alert('请填写角色名称和角色设定！');
+                    return;
+                }
+                
+                // 保存到localStorage
+                const customCharacter = {
+                    name: name,
+                    description: '自定义角色',
+                    prompt: prompt
+                };
+                
+                localStorage.setItem('customCharacter', JSON.stringify(customCharacter));
+                characterPrompts['自定义'] = customCharacter;
+                
+                // 切换到自定义角色
+                state.currentCharacter = '自定义';
+                updateCharacterUI();
+                updateHeader();
+                hideCustomCharacterPanel();
+                
+                append('system', `💫 自定义角色 "${name}" 已保存并激活！`);
+                
+                // 清空输入框
+                els.customName.value = '';
+                els.customPrompt.value = '';
+            }
+
+            // 更新角色选择界面
+            function updateCharacterUI() {
+                if (!els.characterSelect) return;
+                
+                els.characterSelect.value = state.currentCharacter;
+                
+                // 更新角色信息
+                if (els.characterInfo) {
+                    const character = characterPrompts[state.currentCharacter];
+                    if (character) {
+                        els.characterInfo.textContent = character.description;
+                    }
+                }
+            }
+
+            // 更新聊天面板标题
+            function updateHeader() {
+                const header = document.querySelector('.receptionist-title');
+                const subtitle = document.querySelector('.receptionist-subtitle');
+                
+                if (header && subtitle) {
+                    const character = characterPrompts[state.currentCharacter];
+                    if (character) {
+                        if (state.currentCharacter === '弗洛洛') {
+                            header.textContent = '弗洛洛 · 鸣潮少女';
+                            subtitle.textContent = '呀～指挥使好！';
+                        } else if (state.currentCharacter === '凯瑟琳') {
+                            header.textContent = '凯瑟琳 · 工会接待';
+                            subtitle.textContent = '冒险仍在继续~';
+                        } else if (state.currentCharacter === '自定义') {
+                            header.textContent = `${character.name} · 自定义角色`;
+                            subtitle.textContent = '您的专属聊天伙伴';
+                        }
+                    }
+                }
+            }
+
+            // 加载自定义角色
+            function loadCustomCharacter() {
+                try {
+                    const saved = localStorage.getItem('customCharacter');
+                    if (saved) {
+                        const customCharacter = JSON.parse(saved);
+                        characterPrompts['自定义'] = customCharacter;
+                    }
+                } catch (err) {
+                    console.log('加载自定义角色失败:', err);
+                }
+            }
+            function updateModelUI() {
+                if (!els.modelSelect) return;
+                
+                els.modelSelect.innerHTML = '';
+                state.models.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.id;
+                    option.textContent = model.name;
+                    option.selected = model.id === state.currentModel;
+                    option.disabled = !model.enabled;
+                    els.modelSelect.appendChild(option);
+                });
+
+                // 更新模型信息
+                if (els.modelInfo) {
+                    const currentModel = state.models.find(m => m.id === state.currentModel);
+                    if (currentModel) {
+                        els.modelInfo.textContent = currentModel.description || '';
+                        els.modelInfo.className = `model-info ${currentModel.enabled ? 'enabled' : 'disabled'}`;
+                    }
+                }
+            }
+
+            function append(role, content) {
+                state.messages.push({ role, content, t: Date.now() });
+                if (role !== 'system') {
+                    saveHistory();
+                }
+                render();
+            }
+
+            function render() {
+                if (!els.list) return;
+                els.list.innerHTML = '';
+                state.messages.forEach(m => {
+                    const row = document.createElement('div');
+                    row.className = `msg-row ${m.role === 'user' ? 'user' : m.role === 'system' ? 'system' : 'assistant'}`;
+                    const bubble = document.createElement('div');
+                    bubble.className = `msg-bubble ${m.role === 'user' ? 'user' : m.role === 'system' ? 'system' : 'assistant'}`;
+                    bubble.textContent = m.content;
+                    row.appendChild(bubble);
+                    els.list.appendChild(row);
+                });
+                els.list.scrollTop = els.list.scrollHeight;
+            }
+
+            async function send() {
+                if (state.sending) return;
+                const text = (els.input.value || '').trim();
+                if (!text) return;
+                append('user', text);
+                els.input.value = '';
+                state.sending = true;
+                const typing = { role: 'assistant', content: '', typing: true };
+                state.messages.push(typing); render();
+
+                try {
+                    const payload = buildPayload();
+                    payload.messages.push({ role: 'user', content: text });
+                    const base = (location.protocol === 'file:') ? 'http://localhost:3000' : '';
+                    // 先尝试流式
+                    const streamRes = await fetch(base + '/api/chat/stream', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (streamRes.ok && streamRes.body && streamRes.body.getReader) {
+                        const reader = streamRes.body.getReader();
+                        const decoder = new TextDecoder();
+                        let full = '';
+                        while (true) {
+                            const { done, value } = await reader.read();
+                            if (done) break;
+                            const chunk = decoder.decode(value, { stream: true });
+                            full += chunk;
+                            typing.content = full;
+                            render();
+                        }
+                        state.messages = state.messages.filter(m => !m.typing);
+                        append('assistant', full || '（无响应）');
+                    } else {
+                        // 回退到非流式
+                        const res = await fetch(base + '/api/chat', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (!res.ok) throw new Error('聊天服务不可用');
+                        const data = await res.json();
+                        state.messages = state.messages.filter(m => !m.typing);
+                        append('assistant', data.reply || '（无响应）');
+                    }
+                } catch (err) {
+                    state.messages = state.messages.filter(m => !m.typing);
+                    append('assistant', '抱歉，当前线路繁忙，请稍后再试。');
+                } finally {
+                    state.sending = false;
+                }
+            }
+
+            function buildPayload() {
+                // 获取当前角色的提示词
+                const character = characterPrompts[state.currentCharacter];
+                const systemPrompt = character ? character.prompt : characterPrompts['凯瑟琳'].prompt;
+                
+                const system = {
+                    role: 'system',
+                    content: '你是“冒险家工会”的接待员凯瑟琳，语气礼貌、简短、贴心，称呼用户为“旅行者”或“冒险者”。在解答时偏向实用建议，避免敏感或不当话题。必要时可结合任务/等级/经验等设定进行拟态回复，以增强沉浸感。结尾可偶尔加一句“冒险仍在继续~”。'
+                };
+                // 仅携带最近的对话，防止过长
+                const recent = state.messages.filter(m => !m.typing && (m.role === 'user' || m.role === 'assistant')).slice(-10)
+                    .map(m => ({ role: m.role, content: m.content }));
+                return { messages: [system, ...recent] };
+            }
+
+            function bind() {
+                els.toggle.addEventListener('click', () => {
+                    state.isOpen = !state.isOpen;
+                    els.panel.style.display = state.isOpen ? 'flex' : 'none';
+                    if (state.isOpen) {
+                        render();
+                        loadModels(); // 每次打开时刷新模型列表
+                    }
+                });
+                els.send.addEventListener('click', send);
+                els.input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') send();
+                });
+                
+                // 模型选择事件
+                if (els.modelSelect) {
+                    els.modelSelect.addEventListener('change', (e) => {
+                        switchModel(e.target.value);
+                    });
+                }
+            }
+
+            return {
+                init() {
+                    els.toggle = document.getElementById('receptionistToggle');
+                    els.panel  = document.getElementById('receptionistPanel');
+                    els.list   = document.getElementById('receptionistMessages');
+                    els.input  = document.getElementById('receptionistInput');
+                    els.send   = document.getElementById('receptionistSend');
+                    els.modelSelect = document.getElementById('receptionistModelSelect');
+                    els.modelInfo = document.getElementById('receptionistModelInfo');
+                    els.characterSelect = document.getElementById('receptionistCharacterSelect');
+                    els.characterInfo = document.getElementById('receptionistCharacterInfo');
+                    els.customPanel = document.getElementById('customCharacterPanel');
+                    els.customName = document.getElementById('customCharacterName');
+                    els.customPrompt = document.getElementById('customCharacterPrompt');
+                    els.saveCustom = document.getElementById('saveCustomCharacter');
+                    els.cancelCustom = document.getElementById('cancelCustomCharacter');
+                    
+                    loadCustomCharacter(); // 加载保存的自定义角色
+                    bind();
+                    loadHistory(currentRole);
+                    loadModels(); // 初始化时加载模型列表
+                    updateCharacterUI(); // 初始化角色界面
+                    
+                    // 若无欢迎语，自动打招呼
+                    if (!state.messages.length) {
+                        append('assistant', '凯瑟琳：冒险仍在继续~ 旅行者，请问需要登记任务、查询经验，或了解工会规则吗？');
+                    }
+                },
+                onRoleSwitched(role) {
+                    loadHistory(role);
+                }
+            };
+        })();
+
+        // 页面加载完成后初始化工会接待员
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM加载完成，开始初始化凯瑟琳...');
+            
+            // 调试：检查元素是否存在
+            const toggleBtn = document.getElementById('receptionistToggle');
+            console.log('凯瑟琳按钮元素:', toggleBtn);
+            if (toggleBtn) {
+                console.log('按钮样式:', window.getComputedStyle(toggleBtn));
+            }
+            
+            if (window.ChatAssistant && typeof window.ChatAssistant.init === 'function') {
+                window.ChatAssistant.init();
+                console.log('凯瑟琳初始化完成');
+            } else {
+                console.log('ChatAssistant未找到');
+            }
+        });
     </script>
 </body>
 </html>
