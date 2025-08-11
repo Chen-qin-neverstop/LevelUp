@@ -3009,8 +3009,6 @@
                 els.list.scrollTop = els.list.scrollHeight;
             }
 
-<<<<<<< HEAD
-=======
             // 本地智能模拟模式 - 凯瑟琳智能回复系统
             function generateLocalKatherineReply(userMessage, chatHistory = []) {
                 // 分析用户输入的关键词
@@ -3078,7 +3076,6 @@
                 return generalReplies[Math.floor(Math.random() * generalReplies.length)];
             }
 
->>>>>>> 2fdee9d4f62fbda7c85cd09ffbee233af076fce5
             async function send() {
                 if (state.sending) return;
                 const text = (els.input.value || '').trim();
@@ -3126,10 +3123,6 @@
                         append('assistant', data.reply || '（无响应）');
                     }
                 } catch (err) {
-<<<<<<< HEAD
-                    state.messages = state.messages.filter(m => !m.typing);
-                    append('assistant', '抱歉，当前线路繁忙，请稍后再试。');
-=======
                     console.log('服务器连接失败，启用本地智能模拟模式:', err.message);
                     state.messages = state.messages.filter(m => !m.typing);
                     
@@ -3169,7 +3162,6 @@
                             append('assistant', reply);
                         }
                     }, 30); // 打字速度
->>>>>>> 2fdee9d4f62fbda7c85cd09ffbee233af076fce5
                 } finally {
                     state.sending = false;
                 }
