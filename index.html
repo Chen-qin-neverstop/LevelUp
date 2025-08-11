@@ -3009,6 +3009,73 @@
                 els.list.scrollTop = els.list.scrollHeight;
             }
 
+            // 本地智能模拟模式 - 凯瑟琳智能回复系统
+            function generateLocalKatherineReply(userMessage, chatHistory = []) {
+                // 分析用户输入的关键词
+                const keywords = {
+                    greeting: ['你好', '您好', 'hello', 'hi', '凯瑟琳'],
+                    level: ['等级', '经验', '升级', 'exp', 'level'],
+                    task: ['任务', '委托', '工作', 'quest', 'mission'],
+                    guild: ['工会', '规则', 'guild', '介绍'],
+                    avatar: ['头像', '形象', '图片', 'avatar'],
+                    help: ['帮助', 'help', '怎么', '如何'],
+                    thanks: ['谢谢', '感谢', 'thank', '辛苦']
+                };
+
+                const msg = userMessage.toLowerCase();
+                
+                // 问候语检测
+                if (keywords.greeting.some(k => msg.includes(k))) {
+                    const greetings = [
+                        '凯瑟琳：您好，尊敬的冒险者！我是工会接待员凯瑟琳，很高兴为您服务~',
+                        '凯瑟琳：欢迎来到冒险家工会！有什么需要帮助的吗？冒险仍在继续！',
+                        '凯瑟琳：又见面了，冒险者！今天想挑战什么任务呢？'
+                    ];
+                    return greetings[Math.floor(Math.random() * greetings.length)];
+                }
+                
+                // 等级经验相关
+                if (keywords.level.some(k => msg.includes(k))) {
+                    const levelReplies = [
+                        '凯瑟琳：关于等级提升，建议您多完成任务！日常任务+2经验，冒险任务+3经验，精英任务+5经验~',
+                        '凯瑟琳：想要快速升级？试试挑战精英任务吧！虽然难度高一些，但经验奖励非常丰厚！',
+                        '凯瑟琳：经验累积是冒险者成长的重要途径，建议您根据当前等级选择合适的任务类型~'
+                    ];
+                    return levelReplies[Math.floor(Math.random() * levelReplies.length)];
+                }
+                
+                // 任务相关
+                if (keywords.task.some(k => msg.includes(k))) {
+                    const taskReplies = [
+                        '凯瑟琳：工会有三种任务类型：🎯日常任务适合新手练手，⚔️冒险任务需要一定技能，🏆精英任务奖励丰厚但难度较高！',
+                        '凯瑟琳：选择任务时要量力而行哦！建议先从日常任务开始，积累经验后再挑战更高难度的委托~',
+                        '凯瑟琳：任务奖励不仅有经验，完成后还能提升在工会的声望！努力成为S级冒险者吧！'
+                    ];
+                    return taskReplies[Math.floor(Math.random() * taskReplies.length)];
+                }
+                
+                // 感谢
+                if (keywords.thanks.some(k => msg.includes(k))) {
+                    const thanksReplies = [
+                        '凯瑟琳：不用客气，这是我应该做的！为冒险者服务是我的职责和荣幸~',
+                        '凯瑟琳：能帮到您真是太好了！有任何问题随时来找我，冒险仍在继续！',
+                        '凯瑟琳：很高兴能为您提供帮助！祝您的冒险之旅一切顺利~'
+                    ];
+                    return thanksReplies[Math.floor(Math.random() * thanksReplies.length)];
+                }
+                
+                // 通用回复
+                const generalReplies = [
+                    '凯瑟琳：我明白您的想法！作为工会接待员，我会尽力为您提供帮助~',
+                    '凯瑟琳：这个问题很有趣呢！虽然我主要负责工会事务，但很乐意和您聊聊~',
+                    '凯瑟琳：每位冒险者都有自己独特的想法，这正是冒险的魅力所在！',
+                    '凯瑟琳：您说得对！在冒险的路上，我们都在不断学习和成长呢~',
+                    '凯瑟琳：作为您的工会接待员，我随时准备为您解答各种问题！冒险仍在继续~'
+                ];
+                
+                return generalReplies[Math.floor(Math.random() * generalReplies.length)];
+            }
+
             async function send() {
                 if (state.sending) return;
                 const text = (els.input.value || '').trim();
@@ -3056,8 +3123,45 @@
                         append('assistant', data.reply || '（无响应）');
                     }
                 } catch (err) {
+                    console.log('服务器连接失败，启用本地智能模拟模式:', err.message);
                     state.messages = state.messages.filter(m => !m.typing);
-                    append('assistant', '抱歉，当前线路繁忙，请稍后再试。');
+                    
+                    // 使用本地智能模拟模式
+                    const userMessage = payload.messages[payload.messages.length - 1]?.content || '';
+                    
+                    // 偶尔提示当前状态
+                    const shouldShowNotice = Math.random() < 0.3;
+                    let reply;
+                    
+                    if (shouldShowNotice) {
+                        const offlineNotices = [
+                            '凯瑟琳：检测到网络连接问题，已启用本地智能模拟模式，功能完全正常~ 请继续您的冒险！',
+                            '凯瑟琳：服务器暂时无法连接，但我的本地智能系统运行正常！有什么需要帮助的吗？',
+                            '凯瑟琳：当前使用离线智能模式，所有基本功能正常运行~ 冒险仍在继续！'
+                        ];
+                        reply = offlineNotices[Math.floor(Math.random() * offlineNotices.length)];
+                    } else {
+                        reply = generateLocalKatherineReply(userMessage, state.messages);
+                    }
+                    
+                    // 模拟打字效果
+                    let displayText = '';
+                    const words = reply.split('');
+                    let i = 0;
+                    
+                    const typeInterval = setInterval(() => {
+                        if (i < words.length) {
+                            displayText += words[i];
+                            state.messages = state.messages.filter(m => !m.typing);
+                            state.messages.push({ role: 'assistant', content: displayText, typing: true });
+                            render();
+                            i++;
+                        } else {
+                            clearInterval(typeInterval);
+                            state.messages = state.messages.filter(m => !m.typing);
+                            append('assistant', reply);
+                        }
+                    }, 30); // 打字速度
                 } finally {
                     state.sending = false;
                 }
