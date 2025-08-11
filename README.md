@@ -38,10 +38,18 @@ cd LevelUp
 
 2. **配置API密钥**
 ```bash
+# 复制示例配置文件
+cp .env.example .env
+
 # 编辑 .env 文件，添加你的API密钥
 DEEPSEEK_API_KEY=sk-your-deepseek-key-here
 MOONSHOT_API_KEY=sk-your-moonshot-key-here
 ```
+
+⚠️ **安全提醒**：
+- 请勿将 `.env` 文件提交到git仓库
+- API密钥是敏感信息，请妥善保管
+- 项目已配置 `.gitignore` 保护你的密钥安全
 
 3. **启动服务**
 ```bash
@@ -125,6 +133,8 @@ PORT=3000
 
 ### 安全特性
 - **API密钥保护**：后端代理，前端不暴露密钥
+- **配置文件安全**：`.env` 文件自动排除在git仓库外
+- **示例配置**：提供 `.env.example` 作为配置模板
 - **智能降级**：API失败时自动切换到备用模式
 - **错误处理**：完善的异常处理机制
 - **用户选择优先**：尊重用户的模型选择，失败时才自动切换
@@ -199,6 +209,68 @@ A: Groq需要代理访问，确保开启了Clash或其他代理工具。
 
 **Q: 角色数据丢失？**
 A: 数据保存在浏览器LocalStorage中，清除浏览器数据会导致丢失。
+
+**Q: Git 推送被拒绝 (push protection) 怎么办？**
+A: 这说明检测到了敏感信息（如API密钥）。请按照以下步骤解决：
+```bash
+# 移除 .env 文件的 Git 追踪
+git rm --cached .env
+
+# 确保 .gitignore 包含 .env
+echo .env >> .gitignore
+
+# 提交更改
+git add .gitignore
+git commit -m "安全更新：保护API密钥"
+
+# 现在可以安全推送
+git push
+```
+
+## 🔐 安全配置详解
+
+### ⚠️ API 密钥保护重要提醒
+- **绝不要**将 `.env` 文件提交到 Git 仓库
+- **绝不要**在代码中硬编码 API 密钥
+- **务必**使用 `.env.example` 作为配置模板
+- **务必**将 `.env` 添加到 `.gitignore`
+
+### 正确的配置流程
+1. **首次配置**
+   ```bash
+   # 复制示例配置文件
+   cp .env.example .env
+   
+   # 编辑配置文件，填入真实的 API 密钥
+   # Windows用户可以使用 notepad .env
+   ```
+
+2. **API 密钥获取**
+   - **DeepSeek**: 访问 [platform.deepseek.com](https://platform.deepseek.com) 注册获取
+   - **Moonshot (Kimi)**: 访问 [platform.moonshot.cn](https://platform.moonshot.cn) 注册获取
+   - **Groq**: 访问 [console.groq.com](https://console.groq.com) 注册获取
+
+3. **安全检查清单**
+   - [ ] `.env` 文件未被 Git 追踪
+   - [ ] `.gitignore` 包含 `.env` 条目
+   - [ ] 所有 API 密钥都在 `.env` 文件中，不在代码里
+   - [ ] 使用 `.env.example` 作为配置模板
+
+### GitHub 推送保护机制
+GitHub 会自动扫描您的提交内容，寻找可能的敏感信息：
+- API 密钥
+- 访问令牌
+- 私钥
+- 密码
+
+如果检测到这些信息，推送会被阻止以保护您的安全。这是一个**保护功能**，不是错误。
+
+### 生产环境部署
+在生产环境中，推荐使用：
+- 环境变量
+- 密钥管理服务 (如 AWS Secrets Manager, Azure Key Vault)
+- 配置管理工具
+- 绝不在代码仓库中存储敏感信息
 
 ## 📄 许可证
 
