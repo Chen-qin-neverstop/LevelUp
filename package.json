@@ -1,16 +1,37 @@
 {
-  "name": "guild-calc-rpg",
-  "version": "1.0.0",
+  "name": "adventurers-guild-levelup",
+  "version": "2.0.0",
+  "description": "RPG风格的任务升级计算器，集成AI工会接待员系统",
+  "main": "free-server-fixed.js",
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node free-server-fixed.js",
+    "dev": "node free-server-fixed.js",
+    "server": "node free-server-fixed.js"
   },
+  "keywords": [
+    "rpg",
+    "calculator",
+    "ai",
+    "chatbot",
+    "gaming",
+    "experience"
+  ],
+  "author": "Chen-qin-neverstop",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Chen-qin-neverstop/LevelUp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Chen-qin-neverstop/LevelUp/issues"
+  },
+  "homepage": "https://github.com/Chen-qin-neverstop/LevelUp#readme",
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "node-fetch": "^2.7.0"
+    "dotenv": "^16.4.5"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
