@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>免费API Key获取指南</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .guide-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .api-guide {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .api-guide:hover {
+            border-color: #4a90e2;
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.1);
+        }
+        
+        .api-guide.recommended {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+        
+        .api-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge.recommended {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge.fast {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge.powerful {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .steps {
+            margin: 15px 0;
+        }
+        
+        .step {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .step::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #4a90e2;
+            font-weight: bold;
+        }
+        
+        .api-input {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .api-input input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .api-input button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .api-input button:hover {
+            background: #218838;
+        }
+        
+        .features {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        .feature::before {
+            content: '✓';
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .link-button {
+            display: inline-block;
+            background: #4a90e2;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            margin: 10px 5px 0 0;
+            transition: background 0.3s ease;
+        }
+        
+        .link-button:hover {
+            background: #357abd;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <div class="header">
+            <h1>🔑 免费大模型API获取指南</h1>
+            <p>选择适合您的免费AI服务，让凯瑟琳接入真正的大模型</p>
+        </div>
+
+        <!-- Groq API - 推荐 -->
+        <div class="api-guide recommended">
+            <div class="api-title">
+                🚀 Groq API 
+                <span class="badge recommended">最推荐</span>
+                <span class="badge fast">超快速</span>
+            </div>
+            <p><strong>完全免费，响应速度超快（毫秒级），注册即用</strong></p>
+            
+            <div class="features">
+                <div class="feature">每月免费14,400次请求</div>
+                <div class="feature">支持Llama 3模型</div>
+                <div class="feature">响应速度极快</div>
+                <div class="feature">无需信用卡验证</div>
+            </div>
+            
+            <div class="steps">
+                <div class="step">访问 <a href="https://console.groq.com" target="_blank">console.groq.com</a></div>
+                <div class="step">使用Google/GitHub账号注册</div>
+                <div class="step">进入API Keys页面</div>
+                <div class="step">点击"Create API Key"</div>
+                <div class="step">复制生成的API Key</div>
+            </div>
+            
+            <div class="api-input">
+                <input type="password" id="groq-key" placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                <button onclick="saveGroqKey()">保存Groq API Key</button>
+            </div>
+        </div>
+
+        <!-- DeepSeek API -->
+        <div class="api-guide">
+            <div class="api-title">
+                🧠 DeepSeek API
+                <span class="badge powerful">强大</span>
+            </div>
+            <p><strong>中文优化的强大AI模型，新用户有充足免费额度</strong></p>
+            
+            <div class="features">
+                <div class="feature">专门优化中文对话</div>
+                <div class="feature">新用户免费额度</div>
+                <div class="feature">支持长上下文</div>
+            </div>
+            
+            <div class="steps">
+                <div class="step">访问 <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a></div>
+                <div class="step">注册DeepSeek账号</div>
+                <div class="step">完成手机验证</div>
+                <div class="step">进入API管理页面</div>
+                <div class="step">创建新的API Key</div>
+            </div>
+            
+            <div class="api-input">
+                <input type="password" id="deepseek-key" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                <button onclick="saveDeepSeekKey()">保存DeepSeek API Key</button>
+            </div>
+        </div>
+
+        <!-- OpenAI API -->
+        <div class="api-guide">
+            <div class="api-title">
+                🤖 OpenAI API
+                <span class="badge powerful">最强大</span>
+            </div>
+            <p><strong>最强大的GPT模型，新用户有18美元免费额度</strong></p>
+            
+            <div class="features">
+                <div class="feature">GPT-3.5-turbo模型</div>
+                <div class="feature">新用户18美元免费额度</div>
+                <div class="feature">最成熟的AI技术</div>
+            </div>
+            
+            <div class="warning">
+                <strong>注意：</strong>需要科学上网和国外手机号/信用卡验证
+            </div>
+            
+            <div class="steps">
+                <div class="step">访问 <a href="https://platform.openai.com" target="_blank">platform.openai.com</a></div>
+                <div class="step">注册OpenAI账号</div>
+                <div class="step">完成手机号验证</div>
+                <div class="step">绑定支付方式（免费额度用完后才会扣费）</div>
+                <div class="step">生成API Key</div>
+            </div>
+            
+            <div class="api-input">
+                <input type="password" id="openai-key" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                <button onclick="saveOpenAIKey()">保存OpenAI API Key</button>
+            </div>
+        </div>
+
+        <!-- Together AI -->
+        <div class="api-guide">
+            <div class="api-title">
+                🤝 Together AI
+                <span class="badge recommended">免费</span>
+            </div>
+            <p><strong>提供多种开源模型，注册即获免费额度</strong></p>
+            
+            <div class="features">
+                <div class="feature">多种Llama模型选择</div>
+                <div class="feature">新用户免费5美元额度</div>
+                <div class="feature">支持最新开源模型</div>
+            </div>
+            
+            <div class="steps">
+                <div class="step">访问 <a href="https://api.together.xyz" target="_blank">api.together.xyz</a></div>
+                <div class="step">注册Together账号</div>
+                <div class="step">进入API设置</div>
+                <div class="step">生成API Key</div>
+            </div>
+            
+            <div class="api-input">
+                <input type="password" id="together-key" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                <button onclick="saveTogetherKey()">保存Together API Key</button>
+            </div>
+        </div>
+
+        <div class="warning">
+            <strong>🔒 安全提示：</strong>API Key是您的私密信息，请妥善保管。这些配置只保存在您的本地服务器中。
+        </div>
+
+        <a href="/" class="back-link">← 返回聊天界面</a>
+        <a href="/config.html" class="link-button">配置页面</a>
+    </div>
+
+    <script>
+        async function saveAPI(provider, key, placeholder) {
+            if (!key || key === placeholder) {
+                alert('请输入有效的API Key');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        provider: provider,
+                        key: key
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert(`${provider} API配置成功！现在可以使用真正的大模型了🎉`);
+                    // 可选：刷新页面或跳转
+                    window.location.href = '/';
+                } else {
+                    alert('配置失败：' + result.message);
+                }
+            } catch (error) {
+                alert('保存时出错：' + error.message);
+            }
+        }
+
+        function saveGroqKey() {
+            const key = document.getElementById('groq-key').value;
+            saveAPI('groq', key, 'gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        }
+
+        function saveDeepSeekKey() {
+            const key = document.getElementById('deepseek-key').value;
+            saveAPI('deepseek', key, 'sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        }
+
+        function saveOpenAIKey() {
+            const key = document.getElementById('openai-key').value;
+            saveAPI('openai', key, 'sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        }
+
+        function saveTogetherKey() {
+            const key = document.getElementById('together-key').value;
+            saveAPI('together', key, 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        }
+    </script>
+</body>
+</html>

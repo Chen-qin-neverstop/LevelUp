@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>免费API配置 - 凯瑟琳设置</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .config-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #4a90e2;
+            margin: 0;
+        }
+        
+        .api-option {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .api-option:hover {
+            border-color: #4a90e2;
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.1);
+        }
+        
+        .api-option.enabled {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+        
+        .api-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .api-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .api-config {
+            display: none;
+        }
+        
+        .api-option.enabled .api-config {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        
+        .status-available {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-needs-config {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .button {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+        
+        .button:hover {
+            background: #357abd;
+        }
+        
+        .button.test {
+            background: #28a745;
+            margin-left: 10px;
+        }
+        
+        .button.test:hover {
+            background: #218838;
+        }
+        
+        .guide {
+            background: #f8f9fa;
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .guide h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .guide ol {
+            padding-left: 20px;
+        }
+        
+        .guide li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="config-container">
+        <div class="header">
+            <h1>🤖 免费AI配置中心</h1>
+            <p>为凯瑟琳配置免费的AI服务</p>
+        </div>
+
+        <!-- HuggingFace API -->
+        <div class="api-option" id="huggingface-option">
+            <div class="api-title">
+                HuggingFace Inference API 
+                <span class="status-badge status-needs-config">需要配置</span>
+            </div>
+            <div class="api-description">
+                完全免费的AI服务，支持多种开源模型。注册HuggingFace账号即可获得免费API额度。
+            </div>
+            <div class="api-config">
+                <div class="form-group">
+                    <label for="hf-token">HuggingFace Token:</label>
+                    <input type="text" id="hf-token" placeholder="hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                </div>
+                <button class="button" onclick="saveHuggingFaceConfig()">保存配置</button>
+                <button class="button test" onclick="testHuggingFace()">测试连接</button>
+            </div>
+        </div>
+
+        <!-- OpenAI API -->
+        <div class="api-option" id="openai-option">
+            <div class="api-title">
+                OpenAI API 
+                <span class="status-badge status-needs-config">需要配置</span>
+            </div>
+            <div class="api-description">
+                最强大的AI服务，新用户有18美元免费额度。需要科学上网和信用卡验证。
+            </div>
+            <div class="api-config">
+                <div class="form-group">
+                    <label for="openai-key">OpenAI API Key:</label>
+                    <input type="text" id="openai-key" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                </div>
+                <button class="button" onclick="saveOpenAIConfig()">保存配置</button>
+                <button class="button test" onclick="testOpenAI()">测试连接</button>
+            </div>
+        </div>
+
+        <!-- 本地AI -->
+        <div class="api-option" id="local-option">
+            <div class="api-title">
+                本地AI (Ollama)
+                <span class="status-badge status-needs-config">需要安装</span>
+            </div>
+            <div class="api-description">
+                完全免费且隐私安全的本地AI方案。需要下载安装Ollama软件。
+            </div>
+            <div class="api-config">
+                <div class="form-group">
+                    <label for="local-url">本地API地址:</label>
+                    <input type="text" id="local-url" value="http://localhost:11434" placeholder="http://localhost:11434">
+                </div>
+                <div class="form-group">
+                    <label for="local-model">模型名称:</label>
+                    <input type="text" id="local-model" value="llama2" placeholder="llama2">
+                </div>
+                <button class="button" onclick="saveLocalConfig()">保存配置</button>
+                <button class="button test" onclick="testLocal()">测试连接</button>
+            </div>
+        </div>
+
+        <!-- 智能模拟模式 -->
+        <div class="api-option enabled" id="simulation-option">
+            <div class="api-title">
+                智能模拟模式
+                <span class="status-badge status-available">总是可用</span>
+            </div>
+            <div class="api-description">
+                基于关键词分析的智能回复系统，无需任何配置即可使用。虽然不是真正的AI，但能提供很好的交互体验。
+            </div>
+        </div>
+
+        <div class="guide">
+            <h3>🚀 快速开始指南</h3>
+            <ol>
+                <li><strong>免费推荐：</strong>注册 <a href="https://huggingface.co/" target="_blank">HuggingFace</a> 账号，获取免费API Token</li>
+                <li><strong>本地方案：</strong>下载安装 <a href="https://ollama.ai/" target="_blank">Ollama</a>，完全免费且隐私安全</li>
+                <li><strong>高级选项：</strong>如果有OpenAI账号，可以使用GPT-3.5-turbo的免费额度</li>
+                <li><strong>即时使用：</strong>当前智能模拟模式已经可以正常使用，无需额外配置</li>
+            </ol>
+        </div>
+
+        <a href="/" class="back-link">← 返回聊天界面</a>
+    </div>
+
+    <script>
+        // 切换API选项
+        document.querySelectorAll('.api-option').forEach(option => {
+            option.addEventListener('click', function() {
+                if (this.id === 'simulation-option') return; // 模拟模式不需要配置
+                
+                this.classList.toggle('enabled');
+                // 其他选项自动取消选中
+                document.querySelectorAll('.api-option').forEach(other => {
+                    if (other !== this && other.id !== 'simulation-option') {
+                        other.classList.remove('enabled');
+                    }
+                });
+            });
+        });
+
+        // 保存HuggingFace配置
+        async function saveHuggingFaceConfig() {
+            const token = document.getElementById('hf-token').value;
+            if (!token) {
+                alert('请输入HuggingFace Token');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        provider: 'huggingface',
+                        token: token
+                    })
+                });
+
+                if (response.ok) {
+                    alert('HuggingFace配置保存成功！');
+                    location.reload();
+                } else {
+                    alert('保存失败，请重试');
+                }
+            } catch (error) {
+                alert('保存时出错：' + error.message);
+            }
+        }
+
+        // 保存OpenAI配置
+        async function saveOpenAIConfig() {
+            const key = document.getElementById('openai-key').value;
+            if (!key) {
+                alert('请输入OpenAI API Key');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        provider: 'openai',
+                        key: key
+                    })
+                });
+
+                if (response.ok) {
+                    alert('OpenAI配置保存成功！');
+                    location.reload();
+                } else {
+                    alert('保存失败，请重试');
+                }
+            } catch (error) {
+                alert('保存时出错：' + error.message);
+            }
+        }
+
+        // 保存本地配置
+        async function saveLocalConfig() {
+            const url = document.getElementById('local-url').value;
+            const model = document.getElementById('local-model').value;
+
+            try {
+                const response = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        provider: 'local',
+                        url: url,
+                        model: model
+                    })
+                });
+
+                if (response.ok) {
+                    alert('本地AI配置保存成功！');
+                    location.reload();
+                } else {
+                    alert('保存失败，请重试');
+                }
+            } catch (error) {
+                alert('保存时出错：' + error.message);
+            }
+        }
+
+        // 测试连接
+        async function testHuggingFace() {
+            const token = document.getElementById('hf-token').value;
+            if (!token) {
+                alert('请先输入Token');
+                return;
+            }
+            
+            alert('正在测试HuggingFace连接...');
+            // 这里可以添加实际的测试逻辑
+        }
+
+        async function testOpenAI() {
+            const key = document.getElementById('openai-key').value;
+            if (!key) {
+                alert('请先输入API Key');
+                return;
+            }
+            
+            alert('正在测试OpenAI连接...');
+            // 这里可以添加实际的测试逻辑
+        }
+
+        async function testLocal() {
+            alert('正在测试本地AI连接...');
+            // 这里可以添加实际的测试逻辑
+        }
+    </script>
+</body>
+</html>
