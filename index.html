@@ -2246,6 +2246,12 @@
                 <button onclick="exportTasks()" class="batch-btn export-tasks">
                     <span>📤</span> 导出任务列表
                 </button>
+                <button onclick="debugTasks()" class="batch-btn" style="background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%);">
+                    <span>🐛</span> 调试任务数据
+                </button>
+                <button onclick="resetTaskData()" class="batch-btn" style="background: linear-gradient(135deg, #FF5722 0%, #D32F2F 100%);">
+                    <span>🔄</span> 重置数据
+                </button>
             </div>
         </div>
 
@@ -3798,6 +3804,30 @@
 
             // 初始化任务管理系统
             function initTaskManagement() {
+                // 检查和修复任务数据
+                console.log('初始化任务管理系统');
+                console.log('原始任务数据:', localStorage.getItem('userTasks'));
+                
+                // 重新加载任务数据并确保数据类型正确
+                const storedTasks = localStorage.getItem('userTasks');
+                if (storedTasks) {
+                    try {
+                        tasks = JSON.parse(storedTasks);
+                        // 确保每个任务的completed属性是正确的布尔值
+                        tasks = tasks.map(task => ({
+                            ...task,
+                            completed: !!task.completed
+                        }));
+                        console.log('修复后的任务数据:', tasks);
+                        
+                        // 重新保存修复后的数据
+                        saveTasks();
+                    } catch (e) {
+                        console.error('解析任务数据失败:', e);
+                        tasks = [];
+                    }
+                }
+                
                 updateTaskLists();
                 updateTaskCounts();
             }
@@ -3836,6 +3866,31 @@
                 showMessage(`任务"${title}"已添加！`, 'success');
             }
 
+            // 添加调试函数
+            function debugTasks() {
+                console.log('=== 任务调试信息 ===');
+                console.log('所有任务:', tasks);
+                console.log('待办任务:', tasks.filter(t => !t.completed));
+                console.log('已完成任务:', tasks.filter(t => t.completed));
+                console.log('localStorage数据:', localStorage.getItem('userTasks'));
+                
+                // 检查DOM元素
+                const pendingContainer = document.getElementById('pendingTasks');
+                const completedContainer = document.getElementById('completedTasks');
+                console.log('DOM容器:', {pendingContainer, completedContainer});
+                console.log('待办容器内容:', pendingContainer?.innerHTML);
+                console.log('已完成容器内容:', completedContainer?.innerHTML);
+                
+                return {
+                    tasks: tasks,
+                    pending: tasks.filter(t => !t.completed),
+                    completed: tasks.filter(t => t.completed)
+                };
+            }
+
+            // 在控制台暴露调试函数
+            window.debugTasks = debugTasks;
+
             // 完成任务
             function completeTask(taskId) {
                 console.log('完成任务被调用，任务ID:', taskId);
@@ -3856,7 +3911,11 @@
                     task.completed = true;
                     task.completedAt = new Date().toISOString();
                     console.log('任务标记为已完成:', task);
+                    console.log('任务completed值类型:', typeof task.completed, task.completed);
                     saveTasks();
+
+                    // 调用调试函数检查数据
+                    debugTasks();
 
                     // 获得经验奖励
                     const expGained = taskTypeConfig[task.type].exp;
@@ -3949,25 +4008,326 @@
                     return;
                 }
 
+                // 创建选择导出格式的对话框
+                const formatChoice = prompt(
+                    '请选择导出格式:\n' +
+                    '1 - 易读文本格式 (.txt)\n' +
+                    '2 - 表格格式 (.csv)\n' +
+                    '3 - 详细报告格式 (.html)\n' +
+                    '4 - JSON格式 (.json)\n' +
+                    '请输入数字 (1-4):'
+                );
+
+                switch (formatChoice) {
+                    case '1':
+                        exportAsText();
+                        break;
+                    case '2':
+                        exportAsCSV();
+                        break;
+                    case '3':
+                        exportAsHTML();
+                        break;
+                    case '4':
+                        exportAsJSON();
+                        break;
+                    default:
+                        showMessage('已取消导出或格式选择无效！', 'info');
+                        return;
+                }
+            }
+
+            // 导出为易读文本格式
+            function exportAsText() {
+                const currentDate = new Date().toLocaleString('zh-CN');
+                const pendingTasks = tasks.filter(t => !t.completed);
+                const completedTasks = tasks.filter(t => t.completed);
+
+                let content = `
+=====================================
+          任务管理系统导出报告
+=====================================
+
+📅 导出时间: ${currentDate}
+📊 任务统计:
+   总任务数: ${tasks.length}
+   待办任务: ${pendingTasks.length}
+   已完成: ${completedTasks.length}
+   完成率: ${tasks.length > 0 ? Math.round(completedTasks.length / tasks.length * 100) : 0}%
+
+=====================================
+          📋 待办任务列表
+=====================================
+
+`;
+
+                if (pendingTasks.length === 0) {
+                    content += '🎉 太棒了！没有待办任务！\n\n';
+                } else {
+                    pendingTasks.forEach((task, index) => {
+                        const config = taskTypeConfig[task.type];
+                        content += `${index + 1}. ${config.icon} ${task.title}\n`;
+                        content += `   类型: ${config.name} (+${config.exp} 经验)\n`;
+                        if (task.description) {
+                            content += `   描述: ${task.description}\n`;
+                        }
+                        content += `   创建时间: ${new Date(task.createdAt).toLocaleString('zh-CN')}\n\n`;
+                    });
+                }
+
+                content += `
+=====================================
+          ✅ 已完成任务列表
+=====================================
+
+`;
+
+                if (completedTasks.length === 0) {
+                    content += '暂无已完成任务。\n\n';
+                } else {
+                    completedTasks
+                        .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))
+                        .forEach((task, index) => {
+                            const config = taskTypeConfig[task.type];
+                            content += `${index + 1}. ${config.icon} ${task.title}\n`;
+                            content += `   类型: ${config.name} (+${config.exp} 经验)\n`;
+                            if (task.description) {
+                                content += `   描述: ${task.description}\n`;
+                            }
+                            content += `   完成时间: ${new Date(task.completedAt).toLocaleString('zh-CN')}\n\n`;
+                        });
+                }
+
+                content += `
+=====================================
+          📈 经验统计
+=====================================
+
+待办任务潜在经验: ${pendingTasks.reduce((sum, task) => sum + taskTypeConfig[task.type].exp, 0)} EXP
+已获得经验: ${completedTasks.reduce((sum, task) => sum + taskTypeConfig[task.type].exp, 0)} EXP
+总经验价值: ${tasks.reduce((sum, task) => sum + taskTypeConfig[task.type].exp, 0)} EXP
+
+=====================================
+            感谢使用任务管理系统！
+=====================================
+`;
+
+                downloadFile(content, `任务报告_${new Date().toLocaleDateString()}.txt`, 'text/plain');
+                showMessage('文本格式任务报告已导出！', 'success');
+            }
+
+            // 导出为CSV格式
+            function exportAsCSV() {
+                let csvContent = '任务ID,任务标题,任务类型,经验值,状态,描述,创建时间,完成时间\n';
+                
+                tasks.forEach(task => {
+                    const config = taskTypeConfig[task.type];
+                    const row = [
+                        task.id,
+                        `"${task.title}"`,
+                        config.name,
+                        config.exp,
+                        task.completed ? '已完成' : '待办',
+                        `"${task.description || ''}"`,
+                        new Date(task.createdAt).toLocaleString('zh-CN'),
+                        task.completedAt ? new Date(task.completedAt).toLocaleString('zh-CN') : ''
+                    ].join(',');
+                    csvContent += row + '\n';
+                });
+
+                downloadFile(csvContent, `任务数据_${new Date().toLocaleDateString()}.csv`, 'text/csv');
+                showMessage('CSV格式任务数据已导出！', 'success');
+            }
+
+            // 导出为HTML报告格式
+            function exportAsHTML() {
+                const currentDate = new Date().toLocaleString('zh-CN');
+                const pendingTasks = tasks.filter(t => !t.completed);
+                const completedTasks = tasks.filter(t => t.completed);
+
+                const htmlContent = `
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务管理系统报告</title>
+    <style>
+        body { font-family: 'Microsoft YaHei', sans-serif; margin: 20px; background: #f5f7fa; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; }
+        .title { color: #667eea; font-size: 2.5em; margin: 0; }
+        .subtitle { color: #666; margin: 10px 0; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 30px 0; }
+        .stat-card { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 10px; text-align: center; }
+        .stat-number { font-size: 2em; font-weight: bold; }
+        .stat-label { opacity: 0.9; }
+        .section { margin: 30px 0; }
+        .section-title { color: #667eea; font-size: 1.5em; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
+        .task-item { background: #f8f9fa; margin: 10px 0; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea; }
+        .task-title { font-weight: bold; font-size: 1.1em; }
+        .task-meta { color: #666; font-size: 0.9em; margin-top: 5px; }
+        .task-description { margin-top: 8px; font-style: italic; }
+        .completed { background: #e8f5e8; border-left-color: #28a745; }
+        .pending { background: #fff3e0; border-left-color: #ff9800; }
+        .task-type { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
+        .type-common { background: #e3f2fd; color: #1976d2; }
+        .type-intermediate { background: #fff3e0; color: #f57c00; }
+        .type-difficult { background: #fce4ec; color: #c2185b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">📝 任务管理系统报告</h1>
+            <p class="subtitle">导出时间: ${currentDate}</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">${tasks.length}</div>
+                <div class="stat-label">总任务数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">${pendingTasks.length}</div>
+                <div class="stat-label">待办任务</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">${completedTasks.length}</div>
+                <div class="stat-label">已完成</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">${tasks.length > 0 ? Math.round(completedTasks.length / tasks.length * 100) : 0}%</div>
+                <div class="stat-label">完成率</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">📋 待办任务 (${pendingTasks.length})</h2>
+            ${pendingTasks.length === 0 ? '<p>🎉 太棒了！没有待办任务！</p>' : 
+                pendingTasks.map(task => {
+                    const config = taskTypeConfig[task.type];
+                    return `
+                        <div class="task-item pending">
+                            <div class="task-title">${config.icon} ${task.title}</div>
+                            <div class="task-meta">
+                                <span class="task-type type-${task.type}">${config.name} (+${config.exp} EXP)</span>
+                                <span style="margin-left: 15px;">创建: ${new Date(task.createdAt).toLocaleString('zh-CN')}</span>
+                            </div>
+                            ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+                        </div>
+                    `;
+                }).join('')
+            }
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">✅ 已完成任务 (${completedTasks.length})</h2>
+            ${completedTasks.length === 0 ? '<p>暂无已完成任务。</p>' : 
+                completedTasks
+                    .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))
+                    .map(task => {
+                        const config = taskTypeConfig[task.type];
+                        return `
+                            <div class="task-item completed">
+                                <div class="task-title">${config.icon} ${task.title}</div>
+                                <div class="task-meta">
+                                    <span class="task-type type-${task.type}">${config.name} (+${config.exp} EXP)</span>
+                                    <span style="margin-left: 15px;">完成: ${new Date(task.completedAt).toLocaleString('zh-CN')}</span>
+                                </div>
+                                ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+                            </div>
+                        `;
+                    }).join('')
+            }
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">📈 经验统计</h2>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                <p><strong>待办任务潜在经验:</strong> ${pendingTasks.reduce((sum, task) => sum + taskTypeConfig[task.type].exp, 0)} EXP</p>
+                <p><strong>已获得经验:</strong> ${completedTasks.reduce((sum, task) => sum + taskTypeConfig[task.type].exp, 0)} EXP</p>
+                <p><strong>总经验价值:</strong> ${tasks.reduce((sum, task) => sum + taskTypeConfig[task.type].exp, 0)} EXP</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+                `;
+
+                downloadFile(htmlContent, `任务报告_${new Date().toLocaleDateString()}.html`, 'text/html');
+                showMessage('HTML格式详细报告已导出！', 'success');
+            }
+
+            // 导出为JSON格式（原有功能）
+            function exportAsJSON() {
                 const exportData = {
                     exportDate: new Date().toISOString(),
-                    totalTasks: tasks.length,
-                    completedTasks: tasks.filter(t => t.completed).length,
-                    pendingTasks: tasks.filter(t => !t.completed).length,
-                    tasks: tasks
+                    exportDateFormatted: new Date().toLocaleString('zh-CN'),
+                    summary: {
+                        totalTasks: tasks.length,
+                        completedTasks: tasks.filter(t => t.completed).length,
+                        pendingTasks: tasks.filter(t => !t.completed).length,
+                        completionRate: tasks.length > 0 ? Math.round(tasks.filter(t => t.completed).length / tasks.length * 100) : 0
+                    },
+                    experienceStats: {
+                        pendingExp: tasks.filter(t => !t.completed).reduce((sum, task) => sum + taskTypeConfig[task.type].exp, 0),
+                        earnedExp: tasks.filter(t => t.completed).reduce((sum, task) => sum + taskTypeConfig[task.type].exp, 0),
+                        totalExpValue: tasks.reduce((sum, task) => sum + taskTypeConfig[task.type].exp, 0)
+                    },
+                    tasks: tasks.map(task => ({
+                        ...task,
+                        typeInfo: taskTypeConfig[task.type],
+                        createdAtFormatted: new Date(task.createdAt).toLocaleString('zh-CN'),
+                        completedAtFormatted: task.completedAt ? new Date(task.completedAt).toLocaleString('zh-CN') : null
+                    }))
                 };
 
                 const dataStr = JSON.stringify(exportData, null, 2);
-                const dataBlob = new Blob([dataStr], {type: 'application/json'});
-                const url = URL.createObjectURL(dataBlob);
+                downloadFile(dataStr, `任务数据_${new Date().toLocaleDateString()}.json`, 'application/json');
+                showMessage('JSON格式任务数据已导出！', 'success');
+            }
+
+            // 下载文件的通用函数
+            function downloadFile(content, filename, mimeType) {
+                const blob = new Blob([content], {type: mimeType + ';charset=utf-8'});
+                const url = URL.createObjectURL(blob);
                 
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = `任务列表_${new Date().toLocaleDateString()}.json`;
+                link.download = filename;
                 link.click();
                 
                 URL.revokeObjectURL(url);
-                showMessage('任务列表已导出！', 'success');
+            }
+
+            // 清理并重置任务数据（调试用）
+            function resetTaskData() {
+                if (confirm('确定要重置所有任务数据吗？这将清除所有任务！')) {
+                    tasks = [];
+                    taskIdCounter = 1;
+                    localStorage.removeItem('userTasks');
+                    localStorage.removeItem('taskIdCounter');
+                    updateTaskLists();
+                    updateTaskCounts();
+                    showMessage('任务数据已重置！', 'info');
+                }
+            }
+
+            // 调试：在控制台中显示任务数据
+            function debugTasks() {
+                console.log('=== 任务调试信息 ===');
+                console.log('localStorage userTasks:', localStorage.getItem('userTasks'));
+                console.log('当前 tasks 变量:', tasks);
+                console.log('taskIdCounter:', taskIdCounter);
+                console.log('待办任务:', tasks.filter(t => t.completed !== true && t.completed !== 'true'));
+                console.log('已完成任务:', tasks.filter(t => t.completed === true || t.completed === 'true'));
+                return {
+                    storedTasks: localStorage.getItem('userTasks'),
+                    currentTasks: tasks,
+                    pendingTasks: tasks.filter(t => t.completed !== true && t.completed !== 'true'),
+                    completedTasks: tasks.filter(t => t.completed === true || t.completed === 'true')
+                };
             }
 
             // 更新任务列表显示
@@ -3977,10 +4337,16 @@
                 const completedContainer = document.getElementById('completedTasks');
                 console.log('容器元素:', {pendingContainer, completedContainer});
 
+                // 修复筛选逻辑：使用简单的布尔值判断
                 const pendingTasks = tasks.filter(t => !t.completed);
                 const completedTasks = tasks.filter(t => t.completed);
                 console.log('待办任务:', pendingTasks);
                 console.log('已完成任务:', completedTasks);
+
+                if (!pendingContainer || !completedContainer) {
+                    console.error('任务容器元素未找到');
+                    return;
+                }
 
                 // 更新待办任务列表
                 if (pendingTasks.length === 0) {
@@ -4046,8 +4412,13 @@
                 const pendingCount = tasks.filter(t => !t.completed).length;
                 const completedCount = tasks.filter(t => t.completed).length;
 
-                document.getElementById('pendingCount').textContent = pendingCount;
-                document.getElementById('completedCount').textContent = completedCount;
+                const pendingCountEl = document.getElementById('pendingCount');
+                const completedCountEl = document.getElementById('completedCount');
+                
+                if (pendingCountEl) pendingCountEl.textContent = pendingCount;
+                if (completedCountEl) completedCountEl.textContent = completedCount;
+                
+                console.log('任务计数更新:', {pendingCount, completedCount});
             }
 
             // 保存任务到本地存储
@@ -4114,7 +4485,7 @@
                     currentRoleData.experience = (currentRoleData.experience || 0) + exp;
                     RoleManager.saveRoleData(currentRole, currentRoleData);
                     calculateLevelUp(); // 调用现有的升级计算函数
-                    updateDisplay(); // 更新显示
+                    updateRoleDisplay(currentRole, currentRoleData); // 更新角色显示
                 }
             }
 
