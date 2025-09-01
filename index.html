@@ -2574,6 +2574,13 @@
                 document.getElementById('guildMain').style.display = 'block';
                 // 切换到选中的角色
                 switchToRole(roleName);
+                
+                // 初始化任务管理系统
+                setTimeout(() => {
+                    if (typeof initTaskManagement === 'function') {
+                        initTaskManagement();
+                    }
+                }, 200);
             }
         };
         
@@ -3831,8 +3838,13 @@
 
             // 完成任务
             function completeTask(taskId) {
+                console.log('完成任务被调用，任务ID:', taskId);
                 const task = tasks.find(t => t.id === taskId);
-                if (!task || task.completed) return;
+                console.log('找到的任务:', task);
+                if (!task || task.completed) {
+                    console.log('任务不存在或已完成');
+                    return;
+                }
 
                 // 添加完成动画
                 const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
@@ -3843,6 +3855,7 @@
                 setTimeout(() => {
                     task.completed = true;
                     task.completedAt = new Date().toISOString();
+                    console.log('任务标记为已完成:', task);
                     saveTasks();
 
                     // 获得经验奖励
@@ -3959,11 +3972,15 @@
 
             // 更新任务列表显示
             function updateTaskLists() {
+                console.log('更新任务列表，当前任务:', tasks);
                 const pendingContainer = document.getElementById('pendingTasks');
                 const completedContainer = document.getElementById('completedTasks');
+                console.log('容器元素:', {pendingContainer, completedContainer});
 
                 const pendingTasks = tasks.filter(t => !t.completed);
                 const completedTasks = tasks.filter(t => t.completed);
+                console.log('待办任务:', pendingTasks);
+                console.log('已完成任务:', completedTasks);
 
                 // 更新待办任务列表
                 if (pendingTasks.length === 0) {
@@ -4115,8 +4132,25 @@
 
             // 页面加载时初始化任务管理系统
             document.addEventListener('DOMContentLoaded', function() {
-                initTaskManagement();
+                // 确保所有元素都已加载
+                setTimeout(() => {
+                    initTaskManagement();
+                }, 100);
             });
+
+            // 如果页面已经加载完成，直接初始化
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(() => {
+                        initTaskManagement();
+                    }, 100);
+                });
+            } else {
+                // 页面已经加载完成
+                setTimeout(() => {
+                    initTaskManagement();
+                }, 100);
+            }
         </script>
     </body>
 </html>
